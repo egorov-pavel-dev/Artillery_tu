@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    android:installLocation="auto">
+
+    <dist:module dist:instant="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name="com.google.android.play.core.splitcompat.SplitCompatApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Artillery">
+        <activity
+            android:name="com.egorovfond.artillery.view.MapsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.db.DBTableActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.db.DBBulletActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.db.DBWeaponActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.db.DBSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.EnemyActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.OrudieSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.MapFragment"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.PopravkiActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.OrudieActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.egorovfond.artillery.view.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
