@@ -1,6 +1,6 @@
 <AppUpdater>
     <update>
-        <latestVersion>v1.0.0.1</latestVersion>
+        <latestVersion>1.0.0.1</latestVersion>
         <latestVersionCode>3</latestVersionCode>
         <url>https://github.com/egorov-pavel-dev/Artillery_tu/releases</url>
     </update>
