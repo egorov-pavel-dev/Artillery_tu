@@ -3,6 +3,7 @@ package com.egorovfond.artillery.view
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
@@ -41,10 +42,8 @@ class MapsActivity : AppCompatActivity() {
 //
 //            appUpdater.start()
             val appUpdaterUtils = AppUpdaterUtils(this)
-                //.setUpdateFrom(UpdateFrom.AMAZON)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("egorov-pavel-dev", "Artillery_tu")
-                //...
                 .withListener(object : UpdateListener {
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean?) {
                         Log.d("Latest Version", update.getLatestVersion())
