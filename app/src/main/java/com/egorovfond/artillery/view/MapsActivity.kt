@@ -10,6 +10,7 @@ import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirm
 import kotlinx.android.synthetic.main.activity_maps.*
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 
 
 const val INSTALL_REQUEST_CODE = 123
@@ -22,6 +23,9 @@ class MapsActivity : AppCompatActivity() {
 
         btn_maps_update.setOnClickListener {
             val appUpdater = AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.GITHUB)
+                .setGitHubUserAndRepo("egorov-pavel-dev", "Artillery_tu")
+                //.setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
                 .setDisplay(Display.DIALOG)
                 .showAppUpdated(true)
