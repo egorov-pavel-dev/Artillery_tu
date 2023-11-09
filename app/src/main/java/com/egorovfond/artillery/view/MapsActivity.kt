@@ -25,6 +25,12 @@ class MapsActivity : AppCompatActivity() {
                 .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
                 .setDisplay(Display.SNACKBAR)
                 .showAppUpdated(true)
+                .setTitleOnUpdateAvailable("Доступно обновление")
+                .setContentOnUpdateAvailable("Проверить обновления")
+                .setTitleOnUpdateNotAvailable("Обновлений не найдено")
+                .setContentOnUpdateNotAvailable("В данный момент у вас установлена последняя версия программы!")
+                .setButtonUpdate("Обновить?")
+                .setButtonDismiss("Не обновлять")
                 .start()
         }
     }
