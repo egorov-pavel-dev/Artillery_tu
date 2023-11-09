@@ -23,7 +23,7 @@ class MapsActivity : AppCompatActivity() {
         btn_maps_update.setOnClickListener {
             val appUpdater = AppUpdater(this)
                 .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
-                .setDisplay(Display.SNACKBAR)
+                .setDisplay(Display.DIALOG)
                 .showAppUpdated(true)
                 .setTitleOnUpdateAvailable("Доступно обновление")
                 .setContentOnUpdateAvailable("Проверить обновления")
@@ -31,7 +31,8 @@ class MapsActivity : AppCompatActivity() {
                 .setContentOnUpdateNotAvailable("В данный момент у вас установлена последняя версия программы!")
                 .setButtonUpdate("Обновить?")
                 .setButtonDismiss("Не обновлять")
-                .start()
+
+            appUpdater.start()
         }
     }
 
