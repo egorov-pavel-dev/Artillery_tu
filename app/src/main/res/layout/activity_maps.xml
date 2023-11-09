@@ -5,17 +5,29 @@
     android:layout_height="match_parent"
     tools:context=".view.MapsActivity">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        tools:ignore="SpeakableTextPresentCheck">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/maps_rv"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+        <Button
+            android:id="@+id/btn_maps_update"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="@string/update_app" />
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            tools:ignore="SpeakableTextPresentCheck">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/maps_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </ScrollView>
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </ScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

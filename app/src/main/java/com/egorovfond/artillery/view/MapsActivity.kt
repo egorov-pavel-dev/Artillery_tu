@@ -5,12 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
-import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.MapRvAdapter
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 import kotlinx.android.synthetic.main.activity_maps.*
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
+
 
 const val INSTALL_REQUEST_CODE = 123
 class MapsActivity : AppCompatActivity() {
@@ -19,6 +19,14 @@ class MapsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        btn_maps_update.setOnClickListener {
+            val appUpdater = AppUpdater(this)
+                .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
+                .setDisplay(Display.SNACKBAR)
+                .showAppUpdated(true)
+                .start()
+        }
     }
 
     override fun onStart() {
