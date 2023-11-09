@@ -32,11 +32,11 @@ class Presenter: ViewModel() {
     @Volatile var weaponlist = mutableListOf<WeaponEntity>()
 
     val maps = mutableListOf(
-        Map(name = "zargabad", url = "com.egorovfond.zargabad", size = 0f, isLoaded = false),
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
         Map(name = "altis_part0", url = "com.egorovfond.altis_part0", size = 0f, isLoaded = false),
         Map(name = "altis_part1", url = "com.egorovfond.altis_part1", size = 0f, isLoaded = false),
         Map(name = "altis_part2", url = "com.egorovfond.altis_part2", size = 0f, isLoaded = false),
+        Map(name = "zargabad", url = "com.egorovfond.zargabad", size = 0f, isLoaded = false),
         Map(name = "chernarus", url = "com.egorovfond.chernarus", size = 0f, isLoaded = false),
         Map(name = "cup_chernarus_a3", url = "com.egorovfond.cup_chernarus_a3", size = 0f, isLoaded = false),
         Map(name = "chongo", url = "com.egorovfond.chongo", size = 0f, isLoaded = false),
