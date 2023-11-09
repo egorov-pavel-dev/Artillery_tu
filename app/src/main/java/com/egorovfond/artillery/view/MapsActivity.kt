@@ -30,43 +30,43 @@ class MapsActivity : AppCompatActivity() {
 
         btn_maps_update.setOnClickListener {
 
-//            val appUpdater = AppUpdater(this)
-////                .setUpdateFrom(UpdateFrom.GITHUB)
-////                .setGitHubUserAndRepo("egorov-pavel-dev", "Artillery_tu")
-//                .setUpdateFrom(UpdateFrom.XML)
-//                .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
-//                .setDisplay(Display.DIALOG)
-//                .showAppUpdated(true)
-//                .setTitleOnUpdateAvailable("Доступно обновление")
-//                .setContentOnUpdateAvailable("Проверить обновления")
-//                .setTitleOnUpdateNotAvailable("Обновлений не найдено")
-//                .setContentOnUpdateNotAvailable("В данный момент у вас установлена последняя версия программы!")
-//                .setButtonUpdate("Обновить?")
-//                .setButtonDismiss("Не обновлять")
-//
-//            appUpdater.start()
-            val appUpdaterUtils = AppUpdaterUtils(this)
+            val appUpdater = AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("egorov-pavel-dev", "Artillery_tu")
-                .withListener(object : UpdateListener {
-                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean?) {
-                        Log.d("Latest Version", update.getLatestVersion())
-                        Log.d("Latest Version Code", update.getLatestVersionCode().toString())
-                        Log.d("URL", update.getUrlToDownload().toString())
-                        Log.d(
-                            "Is update available?",
-                            java.lang.Boolean.toString(isUpdateAvailable!!)
-                        )
-                        if (isUpdateAvailable!!) {
+//                .setUpdateFrom(UpdateFrom.XML)
+                .setUpdateXML("https://github.com/egorov-pavel-dev/Artillery_tu/blob/master/app/version.xml")
+                .setDisplay(Display.DIALOG)
+                .showAppUpdated(true)
+                .setTitleOnUpdateAvailable("Доступно обновление")
+                .setContentOnUpdateAvailable("Проверить обновления")
+                .setTitleOnUpdateNotAvailable("Обновлений не найдено")
+                .setContentOnUpdateNotAvailable("В данный момент у вас установлена последняя версия программы!")
+                .setButtonUpdate("Обновить?")
+                .setButtonDismiss("Не обновлять")
 
-                        }
-                    }
-
-                    override fun onFailed(error: AppUpdaterError) {
-                        Toast.makeText(this@MapsActivity, error.toString(), Toast.LENGTH_LONG).show()
-                    }
-                })
-            appUpdaterUtils.start()
+            appUpdater.start()
+//            val appUpdaterUtils = AppUpdaterUtils(this)
+//                .setUpdateFrom(UpdateFrom.GITHUB)
+//                .setGitHubUserAndRepo("egorov-pavel-dev", "Artillery_tu")
+//                .withListener(object : UpdateListener {
+//                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean?) {
+//                        Log.d("Latest Version", update.getLatestVersion())
+//                        Log.d("Latest Version Code", update.getLatestVersionCode().toString())
+//                        Log.d("URL", update.getUrlToDownload().toString())
+//                        Log.d(
+//                            "Is update available?",
+//                            java.lang.Boolean.toString(isUpdateAvailable!!)
+//                        )
+//                        if (isUpdateAvailable!!) {
+//
+//                        }
+//                    }
+//
+//                    override fun onFailed(error: AppUpdaterError) {
+//                        Toast.makeText(this@MapsActivity, error.toString(), Toast.LENGTH_LONG).show()
+//                    }
+//                })
+//            appUpdaterUtils.start()
         }
     }
 
