@@ -3,6 +3,7 @@ package com.egorovfond.artillery.math
 import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.presenter.BULLET_NOTHING
 import com.egorovfond.artillery.presenter.Presenter
 import kotlin.math.cos
@@ -18,6 +19,25 @@ class Artilery {
 
             return max
         }
+        fun getMaxRange(table: MutableList<Table>): Int{
+            var max = 0
+            for (elem in table ){
+                if (elem.D > max) max = elem.D
+            }
+
+            return max
+        }
+
+        fun getMinRange(table: MutableList<Table>): Int{
+            var min = 0
+            for (elem in table ){
+                if (min == 0) min = elem.D
+                if (elem.D < min) min = elem.D
+            }
+
+            return min
+        }
+
         fun getTypeBullet_new(weapon: Orudie, distance: Int, mortir: Boolean, table: MutableList<Table>, base_: String, h: Int = 0): String {
             var bullet = BULLET_NOTHING
 

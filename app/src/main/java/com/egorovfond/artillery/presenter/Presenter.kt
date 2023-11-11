@@ -378,6 +378,14 @@ class Presenter: ViewModel() {
         }
     }
 
+    fun getMaxRange(): Int{
+        return Artilery.getMaxRange(currentTable)
+    }
+
+    fun getMinRange(): Int{
+        return Artilery.getMinRange(currentTable)
+    }
+
     fun updateTHAndXY(result: Result, Xtarget: Float, Ytarget: Float) {
         synchronized(Presenter::class) {
 

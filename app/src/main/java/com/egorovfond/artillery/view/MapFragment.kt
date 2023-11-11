@@ -104,6 +104,11 @@ class MapFragment() : AppCompatActivity() {
             y = presenter.currentEnemy.y_prilet * 1000
         }
 
+        w_x = presenter.getCurrentWeapon().x * 1000
+        w_y = presenter.getCurrentWeapon().y * 1000
+        w_r = presenter.getMaxRange().toFloat()
+        w_r_min = presenter.getMinRange().toFloat()
+
         val webSetting = webview_map.getSettings()
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true)
         webSetting.javaScriptEnabled = true
@@ -115,7 +120,7 @@ class MapFragment() : AppCompatActivity() {
     }
 
     fun updateWebView(){
-        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}")
+        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}")
         //if (presenter.url.isNotEmpty()) webview_map.loadUrl("https://jetelain.github.io/Arma3Map/panthera3.html")
     }
 
@@ -183,5 +188,10 @@ class MapFragment() : AppCompatActivity() {
     companion object {
         var x = 0f
         var y = 0f
+        var w_x = 0f
+        var w_y = 0f
+        var w_dot_r = 60f
+        var w_r = 0f
+        var w_r_min = 0f
     }
 }
