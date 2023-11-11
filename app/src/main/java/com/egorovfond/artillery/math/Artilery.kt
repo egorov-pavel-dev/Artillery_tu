@@ -200,6 +200,8 @@ class Artilery {
         fun getAim(weapon: Orudie, target: Enemy, result: Result, table: MutableList<Table>):Int{
             val bullet: Table = getBullet(bullet = result.bullet, range = result.distace.toInt(), table = table, mortir = weapon.mortir, base = weapon.base)
 
+            result.time = bullet.time
+
             if (bullet.D != result.distace.toInt()) return -1
 
             var XT = getTemperatureCorrection(Presenter.getPresenter().getPopravki().temp, bullet)
