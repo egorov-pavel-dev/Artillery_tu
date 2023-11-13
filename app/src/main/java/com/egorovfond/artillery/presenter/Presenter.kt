@@ -378,12 +378,14 @@ class Presenter: ViewModel() {
         }
     }
 
-    fun getMaxRange(): Int{
-        return Artilery.getMaxRange(currentTable)
+    fun getMaxRange(isEnemy: Boolean): Int{
+        if (isEnemy) return Artilery.getMaxRange(currentTable, getCurrentWeapon().bullet, getCurrentWeapon().mortir)
+        return Artilery.getMaxRange(currentTable, getCurrentWeapon().bullet, null)
     }
 
-    fun getMinRange(): Int{
-        return Artilery.getMinRange(currentTable)
+    fun getMinRange(isEnemy: Boolean): Int{
+        if (isEnemy) return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, getCurrentWeapon().mortir)
+        return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, null)
     }
 
     fun updateTHAndXY(result: Result, Xtarget: Float, Ytarget: Float) {

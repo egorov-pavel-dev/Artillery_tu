@@ -106,8 +106,8 @@ class MapFragment() : AppCompatActivity() {
 
         w_x = presenter.getCurrentWeapon().x * 1000
         w_y = presenter.getCurrentWeapon().y * 1000
-        w_r = presenter.getMaxRange().toFloat()
-        w_r_min = presenter.getMinRange().toFloat()
+        w_r = presenter.getMaxRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
+        w_r_min = presenter.getMinRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
 
         val webSetting = webview_map.getSettings()
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true)

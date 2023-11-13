@@ -6,7 +6,7 @@ import com.egorovfond.artillery.presenter.BULLET_NOTHING
 
 data class Table(
     var mortir: Boolean = false,
-    var bulet: String = "Не задан",
+    var bulet: String = BULLET_NOTHING,
     var D: Int = 0, /// Дальность
     var II: Int = 0, // Прицел
     var X_tis: Float = 1f, // Изменение дальности на 1 тыс Хтыс
@@ -60,8 +60,9 @@ data class Table(
                         var baseHeigth = 0
                         var time = 0f
 
+                        if (lastElem.bulet == BULLET_NOTHING || nextElem.bulet == BULLET_NOTHING){
 
-                        if (nextElem.D > lastElem.D) {
+                        }else if (nextElem.D > lastElem.D) {
                             II = ((nextElem.II - lastElem.II) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.II).toFloat()
                             X_tis = ((nextElem.X_tis - lastElem.X_tis) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.X_tis)
                             II_delt = ((nextElem.II_delt - lastElem.II_delt) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.II_delt)

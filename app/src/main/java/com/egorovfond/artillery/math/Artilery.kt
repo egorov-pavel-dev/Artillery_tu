@@ -19,18 +19,35 @@ class Artilery {
 
             return max
         }
-        fun getMaxRange(table: MutableList<Table>): Int{
+        fun getMaxRange(table: MutableList<Table>, bullet: String, mortir: Boolean?): Int{
             var max = 0
             for (elem in table ){
+                if (mortir != null && elem.mortir != mortir) {
+                    continue
+                }
+                if (!(bullet.equals(BULLET_NOTHING) || bullet.equals(""))){
+                    if (!elem.bulet.equals(bullet)){
+                        continue
+                    }
+                }
                 if (elem.D > max) max = elem.D
             }
 
             return max
         }
 
-        fun getMinRange(table: MutableList<Table>): Int{
+        fun getMinRange(table: MutableList<Table>, bullet: String, mortir: Boolean?): Int{
             var min = 0
             for (elem in table ){
+                if (mortir != null && elem.mortir != mortir) {
+                    continue
+                }
+                if (!(bullet.equals(BULLET_NOTHING) || bullet.equals(""))){
+                    if (!elem.bulet.equals(bullet)){
+                        continue
+                    }
+                }
+
                 if (min == 0) min = elem.D
                 if (elem.D < min) min = elem.D
             }
