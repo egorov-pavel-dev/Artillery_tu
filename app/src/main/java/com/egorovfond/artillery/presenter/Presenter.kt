@@ -72,6 +72,7 @@ class Presenter: ViewModel() {
         Map(name = "wl_rosche", url = "com.egorovfond.wl_rosche", size = 0f, isLoaded = false),
         Map(name = "pja314", url = "com.egorovfond.pja314", size = 0f, isLoaded = false),
         Map(name = "pecher", url = "com.egorovfond.pecher", size = 0f, isLoaded = false),
+        Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
         Map(name = "woodland_acr", url = "com.egorovfond.woodland_acr", size = 0f, isLoaded = false)
 
     )
