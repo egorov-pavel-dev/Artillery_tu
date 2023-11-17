@@ -23,47 +23,17 @@ class MapFragment() : AppCompatActivity() {
 
     private val TAG = "MapFragment"
 
-    val items = listOf(
-        "chernarus",
-        "cup_chernarus_a3",
-        "lythium",
-        "tanoa",
-        "taunus",
-        "kujari",
-        "altis",
-        "malden",
-        "stratis",
-        "ruha",
-        "wl_rosche",
-        "takistan",
-        "napf",
-        "panthera3",
-        "zargabad",
-        "enoch",
-        "vt7",
-        "uzbin",
-        "tem_anizay",
-        "pulau",
-        "tem_suursaariv",
-        "mcn_aliabad",
-        "mcn_hazarkot",
-        "woodland_acr",
-        "sara",
-        "sara_dbe1",
-        "mountains_acr",
-        "eden",
-        "chongo",
-        "seangola",
-        "dingor",
-        "pja314",
-        "pecher",
-        "pabst_yellowstone"
-    )
+    val items = mutableListOf<String>()
+
     val mapAdapter by lazy{ ArrayAdapter(this, R.layout.list_item, items)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_map)
+        items.clear()
+        for (i in presenter.maps){
+            items.add(i.name)
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

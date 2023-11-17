@@ -39,6 +39,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
         }
 
         private var mySessionId = 0
+        private var nameModule = ""
 
         fun getSplitInstallManager(name: String): SplitInstallManager{
             if (splitInstallManager == null) {
@@ -118,9 +119,23 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 }
             }
 
+            if (nameModule.equals("")){
+                nameModule = map.name
+            }
+
             if (globalSplitInstallManager.installedModules.contains(map.name)) {
-                if(map.name == "base"){
-                    globalSplitInstallManager.startInstall(request)
+                if(map.name.equals("altis")) {
+                    val modules =
+                        listOf("altis", "altis_part0", "altis_part1", "altis_part2")
+                    globalSplitInstallManager.startUninstall(modules)
+                }else if (map.name.equals("pecher")){
+                    val modules =
+                        listOf("pecher", "pecher_part1")
+                    globalSplitInstallManager.startUninstall(modules)
+                }else if (map.name.equals("lythium")){
+                    val modules =
+                        listOf("lythium", "lythium_part0", "lythium_part1", "lythium_part2", "lythium_part3", "lythium_part4")
+                    globalSplitInstallManager.startUninstall(modules)
                 }else {
                     globalSplitInstallManager.startUninstall(listOf(map.name))
                 }
