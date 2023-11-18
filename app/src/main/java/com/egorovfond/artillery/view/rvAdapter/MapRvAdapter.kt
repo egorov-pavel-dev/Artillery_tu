@@ -70,6 +70,8 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
             //mySessionId.clear()
             if (mySessionId.size != 0){
                 Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
+                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                update(map = map)
                 return@with
             }
 
