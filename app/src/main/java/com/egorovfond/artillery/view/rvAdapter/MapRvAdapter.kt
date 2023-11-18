@@ -44,7 +44,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
             GlobalSplitInstallManagerFactory.create(itemView.context)
         }
 
-        private var mySessionId = 0
+        private var mySessionId = mutableListOf(0)
         private var nameModule = ""
         private var isInstall = false
 
@@ -65,12 +65,37 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 .addModule(map.name)
                 .build()
 
-            mySessionId = 0
+            mySessionId.clear()
             map.size = 0f
+
+            val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int>{
+                override fun onSuccess(sessionId: Int) {
+                    if (sessionId == 0) {
+                        // Already installed
+                        Toast.makeText(itemView.context, "Карта уже установлена ", Toast.LENGTH_SHORT).show()
+
+                    } else {
+                        mySessionId.add(sessionId)
+                    }
+                }
+            }
+            val onCompleteListener = object : OnGlobalSplitInstallCompleteListener<Int>{
+                override fun onComplete(task: GlobalSplitInstallTask<Int>?) {
+
+                }
+            }
+            val onFailureListener = object : OnGlobalSplitInstallFailureListener{
+                override fun onFailure(e: Exception?) {
+                    Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
+                    map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                    update(map = map)
+                }
+
+            }
 
             val listener = object : GlobalSplitInstallUpdatedListener {
                 override fun onStateUpdate(state: GlobalSplitInstallSessionState?) {
-                    //if (state!!.sessionId() == mySessionId) {
+                    if ( mySessionId.indexOf(state!!.sessionId()) != -1) {
                         when (state!!.status()) {
                             GlobalSplitInstallSessionStatus.CANCELED -> {
                                 Toast.makeText(itemView.context, "CANCELED ${nameModule}", Toast.LENGTH_SHORT).show()
@@ -118,6 +143,8 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                             .build()
 
                                         globalSplitInstallManager.startInstall(request_part)
+                                            .addOnSuccessListener(onSuccessListener)
+                                            .addOnFailureListener(onFailureListener)
                                     }
                                 }else{
                                     nameModule = ""
@@ -143,33 +170,8 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                 )
                             }
                         }
-                   // }
-                }
-            }
-            val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int>{
-                override fun onSuccess(sessionId: Int) {
-                    if (sessionId == 0) {
-                        // Already installed
-                        Toast.makeText(itemView.context, "Карта уже установлена ", Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        mySessionId = sessionId
                     }
                 }
-            }
-            val onCompleteListener = object : OnGlobalSplitInstallCompleteListener<Int>{
-                override fun onComplete(task: GlobalSplitInstallTask<Int>?) {
-
-                }
-
-            }
-            val onFailureListener = object : OnGlobalSplitInstallFailureListener{
-                override fun onFailure(e: Exception?) {
-                    Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
-                    map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                    update(map = map)
-                }
-
             }
 
             if (nameModule.equals("")){
