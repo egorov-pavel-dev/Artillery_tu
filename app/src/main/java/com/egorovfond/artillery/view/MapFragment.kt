@@ -22,6 +22,7 @@ class MapFragment() : AppCompatActivity() {
     private val splitInstallManager by lazy { SplitInstallManagerFactory.create(this) }
 
     private val TAG = "MapFragment"
+    private var typemap = 0
 
     val items = mutableListOf<String>()
 
@@ -60,18 +61,22 @@ class MapFragment() : AppCompatActivity() {
         if (presenter.map_settings == 1){
             x = presenter.getCurrentWeapon().x * 1000
             y = presenter.getCurrentWeapon().y * 1000
+            typemap = 0
         }
         if (presenter.map_settings == 2){
             x = presenter.getCurrentWeapon().x_Dot * 1000
             y = presenter.getCurrentWeapon().y_Dot * 1000
+            typemap = 1
         }
         if (presenter.map_settings == 3){
             x = presenter.currentEnemy.x * 1000
             y = presenter.currentEnemy.y * 1000
+            typemap = 2
         }
         if (presenter.map_settings == 4){
             x = presenter.currentEnemy.x_prilet * 1000
             y = presenter.currentEnemy.y_prilet * 1000
+            typemap = 2
         }
 
         w_x = presenter.getCurrentWeapon().x * 1000
@@ -90,7 +95,7 @@ class MapFragment() : AppCompatActivity() {
     }
 
     fun updateWebView(){
-        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}")
+        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
         //if (presenter.url.isNotEmpty()) webview_map.loadUrl("https://jetelain.github.io/Arma3Map/panthera3.html")
     }
 
