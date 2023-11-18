@@ -37,16 +37,18 @@ const val INSTALL_REQUEST_CODE = 123
 class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
 
-    class ViewHolder(itemView: View) :
+    private val mySessionId = mutableListOf<Int>()
+    @Volatile private var obj = Any()
+
+    class ViewHolder(itemView: View, mySession : MutableList<Int>, obj_:Any) :
         RecyclerView.ViewHolder(itemView) {
+        @Volatile private var nameModule = ""
+        @Volatile private var obj = obj_
+        private val mySessionId = mySession
 
         private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
             GlobalSplitInstallManagerFactory.create(itemView.context)
         }
-
-        private var mySessionId = mutableListOf(0)
-        private var nameModule = ""
-        private var isInstall = false
 
         private lateinit var installUninstallrequest : GlobalSplitInstallTask<Int>
 
@@ -65,7 +67,12 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 .addModule(map.name)
                 .build()
 
-            mySessionId.clear()
+            //mySessionId.clear()
+            if (mySessionId.size != 0){
+                Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
+                return@with
+            }
+
             map.size = 0f
 
             val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int>{
@@ -73,9 +80,8 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                     if (sessionId == 0) {
                         // Already installed
                         Toast.makeText(itemView.context, "Карта уже установлена ", Toast.LENGTH_SHORT).show()
-
                     } else {
-                        mySessionId.add(sessionId)
+                        addItem(sessionId)
                     }
                 }
             }
@@ -113,7 +119,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                             GlobalSplitInstallSessionStatus.INSTALLED -> {
                                 Toast.makeText(itemView.context, "INSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                                if (isInstall) {
                                     if (nameModule.equals("altis")) {
                                         nameModule = "altis_part0"
                                     } else if (nameModule.equals("altis_part0")) {
@@ -134,7 +139,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                         nameModule = "lythium_part4"
                                     } else {
                                         nameModule = ""
-                                        update(map = map)
                                     }
 
                                     if (!nameModule.equals("")) {
@@ -145,11 +149,9 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                         globalSplitInstallManager.startInstall(request_part)
                                             .addOnSuccessListener(onSuccessListener)
                                             .addOnFailureListener(onFailureListener)
+                                    }else{
+                                        update(map = map)
                                     }
-                                }else{
-                                    nameModule = ""
-                                    update(map = map)
-                                }
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLED -> {
@@ -194,7 +196,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
             installUninstallrequest =
                 if (globalSplitInstallManager.installedModules.contains(nameModule)) {
-                    isInstall = false
                     if (nameModule.equals("altis")) {
                         val modules =
                             mutableListOf("altis")
@@ -239,22 +240,36 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         globalSplitInstallManager.startUninstall(listOf(nameModule))
                     }
                 } else {
-                    isInstall = true
                     globalSplitInstallManager.startInstall(request)
                 }
         }
 
         private fun View.update(map: Map) {
+            clearItem()
+
             map_rv_name.setText(map.name)
             map_rv_size.setText("${Math.round(map.size/1024)} Kb")
             map_rv_isloaded.isChecked = map.isLoaded
+        }
+
+        fun addItem(session: Int){
+            synchronized(obj){
+                mySessionId.add(session)
+            }
+        }
+        fun clearItem(){
+            synchronized(obj){
+                mySessionId.clear()
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MapRvAdapter.ViewHolder {
         return MapRvAdapter.ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_map_list, parent, false) as View
+            itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.card_map_list, parent, false) as View,
+            mySession = mySessionId,
+            obj_ = obj
         )
     }
 
@@ -270,4 +285,5 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     fun updateDataUser() {
         notifyDataSetChanged()
     }
+
 }
