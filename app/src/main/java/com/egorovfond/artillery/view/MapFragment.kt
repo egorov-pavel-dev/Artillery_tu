@@ -22,48 +22,19 @@ class MapFragment() : AppCompatActivity() {
     private val splitInstallManager by lazy { SplitInstallManagerFactory.create(this) }
 
     private val TAG = "MapFragment"
+    private var typemap = 0
 
-    val items = listOf(
-        "chernarus",
-        "cup_chernarus_a3",
-        "lythium",
-        "tanoa",
-        "taunus",
-        "kujari",
-        "altis",
-        "malden",
-        "stratis",
-        "ruha",
-        "wl_rosche",
-        "takistan",
-        "napf",
-        "panthera3",
-        "zargabad",
-        "enoch",
-        "vt7",
-        "uzbin",
-        "tem_anizay",
-        "pulau",
-        "tem_suursaariv",
-        "mcn_aliabad",
-        "mcn_hazarkot",
-        "woodland_acr",
-        "sara",
-        "sara_dbe1",
-        "mountains_acr",
-        "eden",
-        "chongo",
-        "seangola",
-        "dingor",
-        "pja314",
-        "pecher",
-        "pabst_yellowstone"
-    )
+    val items = mutableListOf<String>()
+
     val mapAdapter by lazy{ ArrayAdapter(this, R.layout.list_item, items)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_map)
+        items.clear()
+        for (i in presenter.maps){
+            items.add(i.name)
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -90,19 +61,28 @@ class MapFragment() : AppCompatActivity() {
         if (presenter.map_settings == 1){
             x = presenter.getCurrentWeapon().x * 1000
             y = presenter.getCurrentWeapon().y * 1000
+            typemap = 0
         }
         if (presenter.map_settings == 2){
             x = presenter.getCurrentWeapon().x_Dot * 1000
             y = presenter.getCurrentWeapon().y_Dot * 1000
+            typemap = 1
         }
         if (presenter.map_settings == 3){
             x = presenter.currentEnemy.x * 1000
             y = presenter.currentEnemy.y * 1000
+            typemap = 2
         }
         if (presenter.map_settings == 4){
             x = presenter.currentEnemy.x_prilet * 1000
             y = presenter.currentEnemy.y_prilet * 1000
+            typemap = 2
         }
+
+        w_x = presenter.getCurrentWeapon().x * 1000
+        w_y = presenter.getCurrentWeapon().y * 1000
+        w_r = presenter.getMaxRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
+        w_r_min = presenter.getMinRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
 
         val webSetting = webview_map.getSettings()
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true)
@@ -115,7 +95,7 @@ class MapFragment() : AppCompatActivity() {
     }
 
     fun updateWebView(){
-        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}")
+        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
         //if (presenter.url.isNotEmpty()) webview_map.loadUrl("https://jetelain.github.io/Arma3Map/panthera3.html")
     }
 
@@ -183,5 +163,10 @@ class MapFragment() : AppCompatActivity() {
     companion object {
         var x = 0f
         var y = 0f
+        var w_x = 0f
+        var w_y = 0f
+        var w_dot_r = 60f
+        var w_r = 0f
+        var w_r_min = 0f
     }
 }

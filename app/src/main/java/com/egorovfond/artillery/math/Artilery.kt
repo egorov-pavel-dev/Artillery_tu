@@ -3,6 +3,7 @@ package com.egorovfond.artillery.math
 import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.presenter.BULLET_NOTHING
 import com.egorovfond.artillery.presenter.Presenter
 import kotlin.math.cos
@@ -18,6 +19,42 @@ class Artilery {
 
             return max
         }
+        fun getMaxRange(table: MutableList<Table>, bullet: String, mortir: Boolean?): Int{
+            var max = 0
+            for (elem in table ){
+                if (mortir != null && elem.mortir != mortir) {
+                    continue
+                }
+                if (!(bullet.equals(BULLET_NOTHING) || bullet.equals(""))){
+                    if (!elem.bulet.equals(bullet)){
+                        continue
+                    }
+                }
+                if (elem.D > max) max = elem.D
+            }
+
+            return max
+        }
+
+        fun getMinRange(table: MutableList<Table>, bullet: String, mortir: Boolean?): Int{
+            var min = 0
+            for (elem in table ){
+                if (mortir != null && elem.mortir != mortir) {
+                    continue
+                }
+                if (!(bullet.equals(BULLET_NOTHING) || bullet.equals(""))){
+                    if (!elem.bulet.equals(bullet)){
+                        continue
+                    }
+                }
+
+                if (min == 0) min = elem.D
+                if (elem.D < min) min = elem.D
+            }
+
+            return min
+        }
+
         fun getTypeBullet_new(weapon: Orudie, distance: Int, mortir: Boolean, table: MutableList<Table>, base_: String, h: Int = 0): String {
             var bullet = BULLET_NOTHING
 
@@ -179,6 +216,8 @@ class Artilery {
         }
         fun getAim(weapon: Orudie, target: Enemy, result: Result, table: MutableList<Table>):Int{
             val bullet: Table = getBullet(bullet = result.bullet, range = result.distace.toInt(), table = table, mortir = weapon.mortir, base = weapon.base)
+
+            result.time = bullet.time
 
             if (bullet.D != result.distace.toInt()) return -1
 

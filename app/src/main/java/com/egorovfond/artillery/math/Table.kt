@@ -6,7 +6,7 @@ import com.egorovfond.artillery.presenter.BULLET_NOTHING
 
 data class Table(
     var mortir: Boolean = false,
-    var bulet: String = "Не задан",
+    var bulet: String = BULLET_NOTHING,
     var D: Int = 0, /// Дальность
     var II: Int = 0, // Прицел
     var X_tis: Float = 1f, // Изменение дальности на 1 тыс Хтыс
@@ -21,7 +21,8 @@ data class Table(
     val nameTable: String = "0м/15С/1013.25гПа",
     val baseTemp: Float = 15f,
     val baseH: Float = 1013.25f,
-    val baseHeigth: Int = 0
+    val baseHeigth: Int = 0,
+    val time: Float = 0f
     ) {
     companion object {
         fun getBullet_new(bullet: String, range: Int, table: MutableList<Table>, mortir: Boolean, base_: String): Table{
@@ -57,9 +58,11 @@ data class Table(
                         var baseTemp = 0f
                         var baseH = 0f
                         var baseHeigth = 0
+                        var time = 0f
 
+                        if (lastElem.bulet == BULLET_NOTHING || nextElem.bulet == BULLET_NOTHING){
 
-                        if (nextElem.D > lastElem.D) {
+                        }else if (nextElem.D > lastElem.D) {
                             II = ((nextElem.II - lastElem.II) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.II).toFloat()
                             X_tis = ((nextElem.X_tis - lastElem.X_tis) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.X_tis)
                             II_delt = ((nextElem.II_delt - lastElem.II_delt) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.II_delt)
@@ -74,6 +77,7 @@ data class Table(
                             baseTemp = nextElem.baseTemp
                             baseH = nextElem.baseH
                             baseHeigth = nextElem.baseHeigth
+                            time = ((nextElem.time - lastElem.time) * (D - lastElem.D) / (nextElem.D - lastElem.D) + lastElem.time)
 
                         }
                         else if (nextElem.D == 0){
@@ -130,6 +134,8 @@ data class Table(
                             baseTemp = lastElem.baseTemp
                             baseH = lastElem.baseH
                             baseHeigth = lastElem.baseHeigth
+                            time = lastElem.time
+
                         }
                         else if (lastElem.D == 0){
                             val next = nextBullet_new(bullet = bullet, range = nextElem.D, table = table, mortir = mortir, base_ = base_)
@@ -184,6 +190,7 @@ data class Table(
                             baseTemp = nextElem.baseTemp
                             baseH = nextElem.baseH
                             baseHeigth = nextElem.baseHeigth
+                            time = nextElem.time
                         }
 
 
@@ -204,7 +211,8 @@ data class Table(
                             nameTable = nameTable,
                             baseTemp = baseTemp,
                             baseH = baseH,
-                            baseHeigth = baseHeigth
+                            baseHeigth = baseHeigth,
+                            time = time
                         )
                     } else currentElem = lastElem
             return currentElem
@@ -687,6 +695,7 @@ data class Table(
             baseH = table.baseH,
             baseTemp = table.baseTemp,
             baseHeigth = table.baseHeigth,
+            time = table.time,
             weapon = weapon
         )
 
@@ -707,7 +716,8 @@ data class Table(
             nameTable = table.nameTable,
             baseH = table.baseH,
             baseTemp = table.baseTemp,
-            baseHeigth = table.baseHeigth
+            baseHeigth = table.baseHeigth,
+            time = table.time
             )
 
         val table2B9 = LocalTable2B9.table

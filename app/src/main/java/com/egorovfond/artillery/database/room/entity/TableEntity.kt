@@ -27,5 +27,6 @@ data class TableEntity (
     val nameTable: String = "0м/15С/1013.25гПа",
     val baseH: Float = 1013.25f,
     val baseTemp: Float = 15f,
-    val baseHeigth: Int = 0
+    val baseHeigth: Int = 0,
+    val time: Float = 0f
 )

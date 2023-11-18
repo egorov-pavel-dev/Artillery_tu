@@ -20,9 +20,16 @@ import com.google.android.play.core.splitinstall.testing.FakeSplitInstallManager
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallRequest
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionState
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionStatus
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallUpdatedListener
+import com.jeppeman.globallydynamic.tasks.GlobalSplitInstallTask
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallCompleteListener
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallFailureListener
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
 import kotlinx.android.synthetic.main.card_map_list.view.*
 import java.io.File
+import java.lang.Exception
 import kotlin.math.roundToInt
 
 
@@ -30,37 +37,25 @@ const val INSTALL_REQUEST_CODE = 123
 class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
 
-    class ViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    private val mySessionId = mutableListOf<Int>()
+    @Volatile private var obj = Any()
 
-        private var splitInstallManager: SplitInstallManager? = null
+    class ViewHolder(itemView: View, mySession : MutableList<Int>, obj_:Any) :
+        RecyclerView.ViewHolder(itemView) {
+        @Volatile private var nameModule = ""
+        @Volatile private var obj = obj_
+        private val mySessionId = mySession
+
         private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
             GlobalSplitInstallManagerFactory.create(itemView.context)
         }
 
-        private var mySessionId = 0
-
-        fun getSplitInstallManager(name: String): SplitInstallManager{
-            if (splitInstallManager == null) {
-                //SplitInstallManagerFactory.create(itemView.context)
-                val patt = getExternalFilesDirs(itemView.context, null)
-                val path = "${patt[1]}/${name}.apk"
-                splitInstallManager = FakeSplitInstallManagerFactory.createNewInstance(itemView.context, File(path))
-                (splitInstallManager as FakeSplitInstallManager).setShouldNetworkError(true)
-            }
-
-            return splitInstallManager!!
-        }
+        private lateinit var installUninstallrequest : GlobalSplitInstallTask<Int>
 
         fun bind(map: Map)= with(itemView) {
             map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-            //map.size = globalSplitInstallManager.getSessionState(globalSplitInstallManager.installedModules[map.name])
 
             map_rv_isloaded.setOnClickListener {
-//                if (!map.isLoaded)
-//                    loadMap(map)
-//                else deleteMap(map)
-
                 loadMapGlobal(map)
             }
 
@@ -72,89 +67,211 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 .addModule(map.name)
                 .build()
 
-            var mySessionId = 0
+            //mySessionId.clear()
+            if (mySessionId.size != 0){
+                Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
+                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                update(map = map)
+                return@with
+            }
 
-            globalSplitInstallManager.registerListener { state ->
+            map.size = 0f
 
-                if (state.sessionId() == mySessionId) {
-                    when (state.status()) {
-                        GlobalSplitInstallSessionStatus.CANCELED -> {
-                            Toast.makeText(itemView.context, "CANCELED", Toast.LENGTH_SHORT).show()
-                        }
+            val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int>{
+                override fun onSuccess(sessionId: Int) {
+                    if (sessionId == 0) {
+                        // Already installed
+                        Toast.makeText(itemView.context, "Карта уже установлена ", Toast.LENGTH_SHORT).show()
+                    } else {
+                        addItem(sessionId)
+                    }
+                }
+            }
+            val onCompleteListener = object : OnGlobalSplitInstallCompleteListener<Int>{
+                override fun onComplete(task: GlobalSplitInstallTask<Int>?) {
 
-                        GlobalSplitInstallSessionStatus.DOWNLOADING -> {
-                            val progress =
-                                (state.bytesDownloaded() * 100f / state.totalBytesToDownload()
-                                    .toFloat()).roundToInt()
-                            map.size = state.totalBytesToDownload().toFloat()
+                }
+            }
+            val onFailureListener = object : OnGlobalSplitInstallFailureListener{
+                override fun onFailure(e: Exception?) {
+                    Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
+                    map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                    update(map = map)
+                }
 
-                            Toast.makeText(itemView.context, "DOWNLOADING $progress %", Toast.LENGTH_SHORT).show()
-                        }
+            }
 
-                        GlobalSplitInstallSessionStatus.INSTALLING -> {
-                            Toast.makeText(itemView.context, "INSTALLING", Toast.LENGTH_SHORT).show()
-                        }
+            val listener = object : GlobalSplitInstallUpdatedListener {
+                override fun onStateUpdate(state: GlobalSplitInstallSessionState?) {
+                    if ( mySessionId.indexOf(state!!.sessionId()) != -1) {
+                        when (state!!.status()) {
+                            GlobalSplitInstallSessionStatus.CANCELED -> {
+                                Toast.makeText(itemView.context, "CANCELED ${nameModule}", Toast.LENGTH_SHORT).show()
+                            }
 
-                        GlobalSplitInstallSessionStatus.INSTALLED -> {
-                            Toast.makeText(itemView.context, "INSTALLED", Toast.LENGTH_SHORT).show()
-                        }
+                            GlobalSplitInstallSessionStatus.DOWNLOADING -> {
+                            }
 
-                        GlobalSplitInstallSessionStatus.UNINSTALLED -> {
-                            Toast.makeText(itemView.context, "UNINSTALLED", Toast.LENGTH_SHORT).show()
-                        }
+                            GlobalSplitInstallSessionStatus.INSTALLING -> {
+                                map.size = map.size + state.totalBytesToDownload().toFloat()
 
-                        GlobalSplitInstallSessionStatus.UNINSTALLING -> {
-                            Toast.makeText(itemView.context, "UNINSTALLING", Toast.LENGTH_SHORT).show()
-                        }
+                                Toast.makeText(itemView.context, "INSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
+                            }
 
-                        GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                            globalSplitInstallManager.startConfirmationDialogForResult(
-                                state,
-                                this.context as Activity,
-                                INSTALL_REQUEST_CODE
-                            )
+                            GlobalSplitInstallSessionStatus.INSTALLED -> {
+                                Toast.makeText(itemView.context, "INSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
+                                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                                    if (nameModule.equals("altis")) {
+                                        nameModule = "altis_part0"
+                                    } else if (nameModule.equals("altis_part0")) {
+                                        nameModule = "altis_part1"
+                                    } else if (nameModule.equals("altis_part1")) {
+                                        nameModule = "altis_part2"
+                                    } else if (nameModule.equals("pecher")) {
+                                        nameModule = "pecher_part1"
+                                    } else if (nameModule.equals("lythium")) {
+                                        nameModule = "lythium_part0"
+                                    } else if (nameModule.equals("lythium_part0")) {
+                                        nameModule = "lythium_part1"
+                                    } else if (nameModule.equals("lythium_part1")) {
+                                        nameModule = "lythium_part2"
+                                    } else if (nameModule.equals("lythium_part2")) {
+                                        nameModule = "lythium_part3"
+                                    } else if (nameModule.equals("lythium_part3")) {
+                                        nameModule = "lythium_part4"
+                                    } else {
+                                        nameModule = ""
+                                    }
+
+                                    if (!nameModule.equals("")) {
+                                        val request_part = GlobalSplitInstallRequest.newBuilder()
+                                            .addModule(nameModule)
+                                            .build()
+
+                                        globalSplitInstallManager.startInstall(request_part)
+                                            .addOnSuccessListener(onSuccessListener)
+                                            .addOnFailureListener(onFailureListener)
+                                    }else{
+                                        update(map = map)
+                                    }
+                            }
+
+                            GlobalSplitInstallSessionStatus.UNINSTALLED -> {
+                                Toast.makeText(itemView.context, "UNINSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
+                                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
+                                update(map = map)
+                            }
+
+                            GlobalSplitInstallSessionStatus.UNINSTALLING -> {
+                                Toast.makeText(itemView.context, "UNINSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
+                            }
+
+                            GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                                globalSplitInstallManager.startConfirmationDialogForResult(
+                                    state,
+                                    this@with.context as Activity,
+                                    INSTALL_REQUEST_CODE
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            if (globalSplitInstallManager.installedModules.contains(map.name)) {
-                if(map.name == "base"){
-                    globalSplitInstallManager.startInstall(request)
-                }else {
-                    globalSplitInstallManager.startUninstall(listOf(map.name))
-                }
-            } else {
-                globalSplitInstallManager.startInstall(request)
-            }.addOnSuccessListener { sessionId ->
-                if (sessionId == 0) {
-                    // Already installed
-                    Toast.makeText(itemView.context, "¡SUCCESS!", Toast.LENGTH_SHORT).show()
-                    map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                    update(map = map)
-                } else {
-                    mySessionId = sessionId
-                    //map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                    //update(map = map)
-                }
-            }.addOnFailureListener {
-                Toast.makeText(itemView.context, "¡FAILURE! ${it.message.toString()}", Toast.LENGTH_LONG).show()
-                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                update(map = map)
+            if (nameModule.equals("")){
+                nameModule = map.name
             }
+
+            globalSplitInstallTask(listener, nameModule, request)
+
+            installUninstallrequest.addOnSuccessListener(onSuccessListener)
+            installUninstallrequest.addOnCompleteListener(onCompleteListener)
+            installUninstallrequest.addOnFailureListener(onFailureListener)
+        }
+
+        private fun globalSplitInstallTask(
+            listener: GlobalSplitInstallUpdatedListener,
+            nameModule: String,
+            request: GlobalSplitInstallRequest?
+        ){
+            globalSplitInstallManager.registerListener(listener)
+
+            installUninstallrequest =
+                if (globalSplitInstallManager.installedModules.contains(nameModule)) {
+                    if (nameModule.equals("altis")) {
+                        val modules =
+                            mutableListOf("altis")
+                        if (globalSplitInstallManager.installedModules.contains("altis_part0")){
+                            modules.add("altis_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("altis_part1")){
+                            modules.add("altis_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("altis_part2")){
+                            modules.add("altis_part2")
+                        }
+                        globalSplitInstallManager.startUninstall(modules)
+                    } else if (nameModule.equals("pecher")) {
+                        val modules =
+                            mutableListOf("pecher")
+                        if (globalSplitInstallManager.installedModules.contains("pecher_part1")){
+                            modules.add("pecher_part1")
+                        }
+                        globalSplitInstallManager.startUninstall(modules)
+                    } else if (nameModule.equals("lythium")) {
+                        val modules =
+                            mutableListOf("lythium")
+                        if (globalSplitInstallManager.installedModules.contains("lythium_part0")){
+                            modules.add("lythium_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("lythium_part1")){
+                            modules.add("lythium_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("lythium_part2")){
+                            modules.add("lythium_part2")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("lythium_part3")){
+                            modules.add("lythium_part3")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("lythium_part4")){
+                            modules.add("lythium_part4")
+                        }
+
+                        globalSplitInstallManager.startUninstall(modules)
+                    } else {
+                        globalSplitInstallManager.startUninstall(listOf(nameModule))
+                    }
+                } else {
+                    globalSplitInstallManager.startInstall(request)
+                }
         }
 
         private fun View.update(map: Map) {
+            clearItem()
+
             map_rv_name.setText(map.name)
             map_rv_size.setText("${Math.round(map.size/1024)} Kb")
             map_rv_isloaded.isChecked = map.isLoaded
+        }
+
+        fun addItem(session: Int){
+            synchronized(obj){
+                mySessionId.add(session)
+            }
+        }
+        fun clearItem(){
+            synchronized(obj){
+                mySessionId.clear()
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MapRvAdapter.ViewHolder {
         return MapRvAdapter.ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_map_list, parent, false) as View
+            itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.card_map_list, parent, false) as View,
+            mySession = mySessionId,
+            obj_ = obj
         )
     }
 
@@ -170,4 +287,5 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     fun updateDataUser() {
         notifyDataSetChanged()
     }
+
 }

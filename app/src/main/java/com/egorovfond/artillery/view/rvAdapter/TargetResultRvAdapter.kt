@@ -124,7 +124,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
             text_list_item.setText("${resultAbout.orudie.nameOrudie} Снаряд: ${resultAbout.bullet}")
             if (resultAbout.resultPricel == -1){
                 text_list_item_result.setText("Снаряд не подходит")
-            }else     text_list_item_result.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol}")
+            }else     text_list_item_result.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol} (${resultAbout.time}сек.)")
             ed_bussol.setText(resultAbout.ugol.toString())
             ed_enemy.setText(resultAbout.azimut_target.toString())
             ed_range.setText(resultAbout.distace.toString())

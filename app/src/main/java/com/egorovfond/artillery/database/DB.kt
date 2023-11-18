@@ -285,7 +285,7 @@ class DB {
                                 table = dbTable
                             ) + korCorner
 
-//                            result.resultUgol = result.resultUgol + PricelCorr.getCorrPricel(
+//                              result.resultUgol = result.resultUgol + PricelCorr.getCorrPricel(
 //                                mil = result.orudie.mil,
 //                                weapon = result.orudie.weapon,
 //                                target = result.azimut_target,
@@ -304,6 +304,7 @@ class DB {
                                 result.deltaPricel = 0
                                 result.resultUgol = 0
                                 result.deltaUgol = 0
+                                result.time = 0f
 
                                 result.bullet = BULLET_NOTHING
                             }

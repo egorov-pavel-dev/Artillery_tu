@@ -33,9 +33,9 @@ class Presenter: ViewModel() {
 
     val maps = mutableListOf(
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
-        Map(name = "altis_part0", url = "com.egorovfond.altis_part0", size = 0f, isLoaded = false),
-        Map(name = "altis_part1", url = "com.egorovfond.altis_part1", size = 0f, isLoaded = false),
-        Map(name = "altis_part2", url = "com.egorovfond.altis_part2", size = 0f, isLoaded = false),
+//        Map(name = "altis_part0", url = "com.egorovfond.altis_part0", size = 0f, isLoaded = false),
+//        Map(name = "altis_part1", url = "com.egorovfond.altis_part1", size = 0f, isLoaded = false),
+//        Map(name = "altis_part2", url = "com.egorovfond.altis_part2", size = 0f, isLoaded = false),
         Map(name = "zargabad", url = "com.egorovfond.zargabad", size = 0f, isLoaded = false),
         Map(name = "chernarus", url = "com.egorovfond.chernarus", size = 0f, isLoaded = false),
         Map(name = "cup_chernarus_a3", url = "com.egorovfond.cup_chernarus_a3", size = 0f, isLoaded = false),
@@ -45,11 +45,11 @@ class Presenter: ViewModel() {
         Map(name = "enoch", url = "com.egorovfond.enoch", size = 0f, isLoaded = false),
         Map(name = "kujari", url = "com.egorovfond.kujari", size = 0f, isLoaded = false),
         Map(name = "lythium", url = "com.egorovfond.lythium", size = 0f, isLoaded = false),
-        Map(name = "lythium_part0", url = "com.egorovfond.lythium_part0", size = 0f, isLoaded = false),
-        Map(name = "lythium_part1", url = "com.egorovfond.lythium_part1", size = 0f, isLoaded = false),
-        Map(name = "lythium_part2", url = "com.egorovfond.lythium_part2", size = 0f, isLoaded = false),
-        Map(name = "lythium_part3", url = "com.egorovfond.lythium_part3", size = 0f, isLoaded = false),
-        Map(name = "lythium_part4", url = "com.egorovfond.lythium_part4", size = 0f, isLoaded = false),
+//        Map(name = "lythium_part0", url = "com.egorovfond.lythium_part0", size = 0f, isLoaded = false),
+//        Map(name = "lythium_part1", url = "com.egorovfond.lythium_part1", size = 0f, isLoaded = false),
+//        Map(name = "lythium_part2", url = "com.egorovfond.lythium_part2", size = 0f, isLoaded = false),
+//        Map(name = "lythium_part3", url = "com.egorovfond.lythium_part3", size = 0f, isLoaded = false),
+//        Map(name = "lythium_part4", url = "com.egorovfond.lythium_part4", size = 0f, isLoaded = false),
         Map(name = "malden", url = "com.egorovfond.malden", size = 0f, isLoaded = false),
         Map(name = "mcn_aliabad", url = "com.egorovfond.mcn_aliabad", size = 0f, isLoaded = false),
         Map(name = "mcn_hazarkot", url = "com.egorovfond.mcn_hazarkot", size = 0f, isLoaded = false),
@@ -72,6 +72,7 @@ class Presenter: ViewModel() {
         Map(name = "wl_rosche", url = "com.egorovfond.wl_rosche", size = 0f, isLoaded = false),
         Map(name = "pja314", url = "com.egorovfond.pja314", size = 0f, isLoaded = false),
         Map(name = "pecher", url = "com.egorovfond.pecher", size = 0f, isLoaded = false),
+        Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
         Map(name = "woodland_acr", url = "com.egorovfond.woodland_acr", size = 0f, isLoaded = false)
 
     )
@@ -376,6 +377,16 @@ class Presenter: ViewModel() {
                 weapon.mil
             )
         }
+    }
+
+    fun getMaxRange(isEnemy: Boolean): Int{
+        if (isEnemy) return Artilery.getMaxRange(currentTable, getCurrentWeapon().bullet, getCurrentWeapon().mortir)
+        return Artilery.getMaxRange(currentTable, getCurrentWeapon().bullet, null)
+    }
+
+    fun getMinRange(isEnemy: Boolean): Int{
+        if (isEnemy) return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, getCurrentWeapon().mortir)
+        return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, null)
     }
 
     fun updateTHAndXY(result: Result, Xtarget: Float, Ytarget: Float) {

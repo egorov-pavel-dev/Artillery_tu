@@ -11,4 +11,5 @@ data class Result (
     @Volatile var resultPricel: Int = 0,
     @Volatile var deltaUgol: Int = 0,
     @Volatile var deltaPricel: Int = 0,
+    @Volatile var time: Float = 0f
 )
