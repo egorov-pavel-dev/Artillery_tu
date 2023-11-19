@@ -34,8 +34,8 @@ class DB {
         var weaponDao: WeaponDao? = null
         var tableDao: TableDao? = null
 
-        private val baseWeaponList = mutableListOf(Weapons.weapon_120mm, Weapons.weapon_2B14, Weapons.weapon_2B9, Weapons.weapon_D30, Weapons.weapon_M119, Weapons.weapon_M224, Weapons.weapon_M252, Weapons.weapon_Type63, Weapons.weapon_2C3, Weapons.weapon_2C1, Weapons.weapon_SPG9)
-        val weapon = mutableListOf(Weapons.weapon_120mm, Weapons.weapon_2B14, Weapons.weapon_2B9, Weapons.weapon_D30, Weapons.weapon_M119, Weapons.weapon_M224, Weapons.weapon_M252, Weapons.weapon_Type63, Weapons.weapon_2C3, Weapons.weapon_2C1, Weapons.weapon_SPG9)
+        private val baseWeaponList = mutableListOf(Weapons.weapon_120mm, Weapons.weapon_2B14, Weapons.weapon_2B9, Weapons.weapon_D30, Weapons.weapon_M119, Weapons.weapon_M224, Weapons.weapon_M252, Weapons.weapon_Type63, Weapons.weapon_2C3, Weapons.weapon_2C1, Weapons.weapon_SPG9, Weapons.weapon_BM21)
+        val weapon = mutableListOf(Weapons.weapon_120mm, Weapons.weapon_2B14, Weapons.weapon_2B9, Weapons.weapon_D30, Weapons.weapon_M119, Weapons.weapon_M224, Weapons.weapon_M252, Weapons.weapon_Type63, Weapons.weapon_2C3, Weapons.weapon_2C1, Weapons.weapon_SPG9, Weapons.weapon_BM21)
         private val table = mutableListOf<Table>()
 
         fun subscribegetWeaponList(): MutableLiveData<MutableList<WeaponEntity>> = liveDatagetWeaponList
@@ -809,6 +809,27 @@ class DB {
                                 {
                                     table.clear()
                                     table.addAll(Table.tableSPG9)
+                                    liveDatagetWeaponTable.postValue(table)
+                                },
+                                {
+
+                                }
+                            )
+                }
+                if (weaponName.equals(Weapons.weapon_BM21)) {
+                    for (table_ in Table.tableBM21)
+                        it.insertTable(
+                            Table.toEntity(
+                                table = table_,
+                                weapon = weaponName
+                            )
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                {
+                                    table.clear()
+                                    table.addAll(Table.tableBM21)
                                     liveDatagetWeaponTable.postValue(table)
                                 },
                                 {

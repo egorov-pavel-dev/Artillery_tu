@@ -731,5 +731,6 @@ data class Table(
         val table2C1 = LocalTable2C1.table
         val tableType63 = LocalTableType63.table
         val tableSPG9 = LocalTableSPG9.table
+        val tableBM21 = LocalTableBM21.table
     }
 }

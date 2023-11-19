@@ -2,6 +2,7 @@ package com.egorovfond.artillery.data
 
 class Weapons {
     companion object{
+        const val weapon_BM21 = "BM21"
         const val weapon_2B14 = "2B14"
         const val weapon_120mm = "120mm"
         const val weapon_2B9 = "2B9"
