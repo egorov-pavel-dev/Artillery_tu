@@ -2,6 +2,7 @@ package com.egorovfond.artillery.view.db
 
 import android.app.Activity
 import android.app.DownloadManager
+import android.app.PendingIntent.getActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -85,6 +86,10 @@ class DBSettingsActivity : AppCompatActivity() {
         }
 
         localMap.isChecked = presenter.localmap
+
+        val versionName =  this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+
+        nameVersion.setText("Версия \n ${versionName}")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
