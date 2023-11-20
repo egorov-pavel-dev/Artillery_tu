@@ -3,6 +3,7 @@ package com.egorovfond.artillery.math
 import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.data.Weapons
 import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.presenter.BULLET_NOTHING
 import com.egorovfond.artillery.presenter.Presenter
@@ -177,13 +178,14 @@ class Artilery {
             val IIH:Float = (hTarget-hOrudie)/100f*bullet.IIh_delt
             if (mortir) {
                 //if (hTarget > hOrudie) return znak * IIH else return znak * -1f * IIH
-                if(weapon.weapon.equals("M119")
-                    || weapon.weapon.equals("D30")
-                    || weapon.weapon.equals("M224")
-                    || weapon.weapon.equals("2B9")
-                    || weapon.weapon.equals("Type63")
-                    || weapon.weapon.equals("2C3")
-                    || weapon.weapon.equals("2C1")
+                if(weapon.weapon.equals(Weapons.weapon_M119)
+                    || weapon.weapon.equals(Weapons.weapon_D30)
+                    || weapon.weapon.equals(Weapons.weapon_M224)
+                    || weapon.weapon.equals(Weapons.weapon_2B9)
+                    || weapon.weapon.equals(Weapons.weapon_Type63)
+                    || weapon.weapon.equals(Weapons.weapon_2C3)
+                    || weapon.weapon.equals(Weapons.weapon_2C1)
+                    || weapon.weapon.equals(Weapons.weapon_BM21)
                 ) return -1f * IIH
                 else return IIH
             }
@@ -236,14 +238,14 @@ class Artilery {
             /// Чтобы компенсировать отклонение снаряда на X, следует изменить прицел на следующее значение П
             var P: Float = 0f
             if (weapon.mortir) {
-                if(weapon.weapon.equals("M119")
-                    || weapon.weapon.equals("M224")
-                    || weapon.weapon.equals("D30")
-                    || weapon.weapon.equals("M224")
-                    || weapon.weapon.equals("2B9")
-                    || weapon.weapon.equals("Type63")
-                    || weapon.weapon.equals("2C3")
-                    || weapon.weapon.equals("2C1")
+                if(weapon.weapon.equals(Weapons.weapon_M119)
+                    || weapon.weapon.equals(Weapons.weapon_D30)
+                    || weapon.weapon.equals(Weapons.weapon_M224)
+                    || weapon.weapon.equals(Weapons.weapon_2B9)
+                    || weapon.weapon.equals(Weapons.weapon_Type63)
+                    || weapon.weapon.equals(Weapons.weapon_2C3)
+                    || weapon.weapon.equals(Weapons.weapon_2C1)
+                    || weapon.weapon.equals(Weapons.weapon_BM21)
                 ) P = delta_X_summ/bullet.X_tis
                 else P = -1f * delta_X_summ/bullet.X_tis
             }
