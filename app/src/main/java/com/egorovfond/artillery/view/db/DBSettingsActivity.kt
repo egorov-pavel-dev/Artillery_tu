@@ -89,7 +89,7 @@ class DBSettingsActivity : AppCompatActivity() {
 
         val versionName =  this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 
-        nameVersion.setText("Версия \n ${versionName}")
+        nameVersion.setText(" Версия \n ${versionName} ")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -128,8 +128,8 @@ class DBSettingsActivity : AppCompatActivity() {
 
         //set downloadmanager
         val request = DownloadManager.Request(Uri.parse(url))
-        request.setDescription("Обновление приложения")
-        request.setTitle("Обновление")
+        request.setDescription("Обновление Artillery")
+        request.setTitle("Artillery")
 
         //set destination
         request.setDestinationUri(destUri)
@@ -157,18 +157,19 @@ class DBSettingsActivity : AppCompatActivity() {
                     intent = Intent(Intent.ACTION_VIEW)
                     intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
                 startActivityForResult(intent, REQUEST_INSTALL)
+                //startActivity(intent)
                 unregisterReceiver(this)
-//                startActivity(intent)
-//                finish()
+                //finish()
             }
         }
 
         //register receiver for when .apk download is compete
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-
         manager.enqueue(request)
+
     }
 
 }
