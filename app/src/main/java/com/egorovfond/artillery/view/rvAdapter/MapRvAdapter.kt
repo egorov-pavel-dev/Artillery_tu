@@ -139,6 +139,12 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                         nameModule = "lythium_part3"
                                     } else if (nameModule.equals("lythium_part3")) {
                                         nameModule = "lythium_part4"
+                                    } else if (nameModule.equals("vt7")) {
+                                        nameModule = "vt7_part0"
+                                    } else if (nameModule.equals("vt7_part0")) {
+                                        nameModule = "vt7_part1"
+                                    } else if (nameModule.equals("vt7_part1")) {
+                                        nameModule = "vt7_part2"
                                     } else {
                                         nameModule = ""
                                     }
@@ -237,6 +243,19 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                             modules.add("lythium_part4")
                         }
 
+                        globalSplitInstallManager.startUninstall(modules)
+                    } else if (nameModule.equals("vt7")) {
+                        val modules =
+                            mutableListOf("vt7")
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part0")){
+                            modules.add("vt7_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part1")){
+                            modules.add("vt7_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part2")){
+                            modules.add("vt7_part2")
+                        }
                         globalSplitInstallManager.startUninstall(modules)
                     } else {
                         globalSplitInstallManager.startUninstall(listOf(nameModule))

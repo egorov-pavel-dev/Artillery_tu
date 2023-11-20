@@ -105,4 +105,7 @@
     <string name="update_app">Обновить приложение</string>
     <string name="title_brf_sumava">brf_sumava</string>
     <string name="title_fallujahint">fallujahint</string>
+    <string name="title_vt7_part0">Vt7 (part0)</string>
+    <string name="title_vt7_part1">Vt7 (part1)</string>
+    <string name="title_vt7_part2">Vt7 (part2)</string>
 </resources>
