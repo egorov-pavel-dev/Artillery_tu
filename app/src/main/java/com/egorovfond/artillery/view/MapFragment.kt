@@ -74,8 +74,13 @@ class MapFragment() : AppCompatActivity() {
             typemap = 2
         }
         if (presenter.map_settings == 4){
-            x = presenter.currentEnemy.x_prilet * 1000
-            y = presenter.currentEnemy.y_prilet * 1000
+            if (presenter.currentEnemy.x_prilet == 0f && presenter.currentEnemy.y_prilet == 0f){
+                x = presenter.currentEnemy.x * 1000
+                y = presenter.currentEnemy.y * 1000
+            }else {
+                x = presenter.currentEnemy.x_prilet * 1000
+                y = presenter.currentEnemy.y_prilet * 1000
+            }
             typemap = 2
         }
 

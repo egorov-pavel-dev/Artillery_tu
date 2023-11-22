@@ -63,10 +63,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
         }
 
         private fun loadMapGlobal(map: Map) = with(itemView){
-            val request = GlobalSplitInstallRequest.newBuilder()
-                .addModule(map.name)
-                .build()
-
             //mySessionId.clear()
             if (mySessionId.size != 0){
                 Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
@@ -114,46 +110,15 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
                             GlobalSplitInstallSessionStatus.INSTALLING -> {
                                 map.size = map.size + state.totalBytesToDownload().toFloat()
-
                                 Toast.makeText(itemView.context, "INSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
                             }
 
                             GlobalSplitInstallSessionStatus.INSTALLED -> {
                                 Toast.makeText(itemView.context, "INSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                                    if (nameModule.equals("altis")) {
-                                        nameModule = "altis_part0"
-                                    } else if (nameModule.equals("altis_part0")) {
-                                        nameModule = "altis_part1"
-                                    } else if (nameModule.equals("altis_part1")) {
-                                        nameModule = "altis_part2"
-                                    } else if (nameModule.equals("pecher")) {
-                                        nameModule = "pecher_part1"
-                                    } else if (nameModule.equals("lythium")) {
-                                        nameModule = "lythium_part0"
-                                    } else if (nameModule.equals("lythium_part0")) {
-                                        nameModule = "lythium_part1"
-                                    } else if (nameModule.equals("lythium_part1")) {
-                                        nameModule = "lythium_part2"
-                                    } else if (nameModule.equals("lythium_part2")) {
-                                        nameModule = "lythium_part3"
-                                    } else if (nameModule.equals("lythium_part3")) {
-                                        nameModule = "lythium_part4"
-                                    } else {
-                                        nameModule = ""
-                                    }
 
-                                    if (!nameModule.equals("")) {
-                                        val request_part = GlobalSplitInstallRequest.newBuilder()
-                                            .addModule(nameModule)
-                                            .build()
+                                update(map = map)
 
-                                        globalSplitInstallManager.startInstall(request_part)
-                                            .addOnSuccessListener(onSuccessListener)
-                                            .addOnFailureListener(onFailureListener)
-                                    }else{
-                                        update(map = map)
-                                    }
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLED -> {
@@ -182,7 +147,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 nameModule = map.name
             }
 
-            globalSplitInstallTask(listener, nameModule, request)
+            globalSplitInstallTask(listener)
 
             installUninstallrequest.addOnSuccessListener(onSuccessListener)
             installUninstallrequest.addOnCompleteListener(onCompleteListener)
@@ -190,9 +155,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
         }
 
         private fun globalSplitInstallTask(
-            listener: GlobalSplitInstallUpdatedListener,
-            nameModule: String,
-            request: GlobalSplitInstallRequest?
+            listener: GlobalSplitInstallUpdatedListener
         ){
             globalSplitInstallManager.registerListener(listener)
 
@@ -238,10 +201,48 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         }
 
                         globalSplitInstallManager.startUninstall(modules)
+                    } else if (nameModule.equals("vt7")) {
+                        val modules =
+                            mutableListOf("vt7")
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part0")){
+                            modules.add("vt7_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part1")){
+                            modules.add("vt7_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("vt7_part2")){
+                            modules.add("vt7_part2")
+                        }
+                        globalSplitInstallManager.startUninstall(modules)
                     } else {
                         globalSplitInstallManager.startUninstall(listOf(nameModule))
                     }
                 } else {
+                    val request_par = GlobalSplitInstallRequest.newBuilder()
+                        .addModule(nameModule)
+
+                    if (nameModule.equals("altis")) {
+                        request_par.addModule("altis_part0")
+                        request_par.addModule("altis_part1")
+                        request_par.addModule("altis_part2")
+
+                    } else if (nameModule.equals("pecher")) {
+                        request_par.addModule("pecher_part1")
+
+                    } else if (nameModule.equals("lythium")) {
+                        request_par.addModule("lythium_part0")
+                        request_par.addModule("lythium_part1")
+                        request_par.addModule("lythium_part2")
+                        request_par.addModule("lythium_part3")
+                        request_par.addModule("lythium_part4")
+
+                    } else if (nameModule.equals("vt7")) {
+                        request_par.addModule("vt7_part0")
+                        request_par.addModule("vt7_part1")
+                        request_par.addModule("vt7_part2")
+                    }
+
+                    val request = request_par.build()
                     globalSplitInstallManager.startInstall(request)
                 }
         }
@@ -262,6 +263,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
         fun clearItem(){
             synchronized(obj){
                 mySessionId.clear()
+                nameModule = ""
             }
         }
     }
