@@ -107,69 +107,68 @@ class DBSettingsActivity : AppCompatActivity() {
     }
 
     fun update(url: String?, fileName: String) {
-        //get destination to update file and set Uri
         val destination =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 .toString() // + File.separator;
-        val destUri = Uri.parse("file://" + destination + File.separator + fileName)
-        //val destUri = Uri.parse(url)
-        Toast.makeText(this@DBSettingsActivity, destUri.toString(), Toast.LENGTH_SHORT).show()
-
-        Log.d("UPDATE", "destUri = $destUri")
 
         //Delete update file if exists
         val file = File(destination + File.separator + fileName)
+        var deleteSuccess = true
         if (file.exists()) {
-            val deleteSuccess = file.delete()
-            Toast.makeText(this@DBSettingsActivity, "Файл существует! Удаление = $deleteSuccess", Toast.LENGTH_SHORT).show()
-
-            Log.d("UPDATE", "file exists! Delete = $deleteSuccess")
+            deleteSuccess = file.delete()
+            Toast.makeText(this@DBSettingsActivity, "Удаление предыдущего обновления! Удаление успешно? $deleteSuccess", Toast.LENGTH_SHORT).show()
         }
 
-        //set downloadmanager
-        val request = DownloadManager.Request(Uri.parse(url))
-        request.setDescription("Обновление Artillery")
-        request.setTitle("Artillery")
+        if (deleteSuccess) {
+            //get destination to update file and set Uri
+            val destUri = Uri.parse("file://" + destination + File.separator + fileName)
+            //val destUri = Uri.parse(url)
+            Toast.makeText(this@DBSettingsActivity, destUri.toString(), Toast.LENGTH_SHORT).show()
 
-        //set destination
-        request.setDestinationUri(destUri)
+            //set downloadmanager
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setDescription("Обновление Artillery")
+            request.setTitle("Artillery")
 
-        // get download service and enqueue file
-        val manager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        file.setReadable(true, false)
+            //set destination
+            request.setDestinationUri(destUri)
 
-        //set BroadcastReceiver to install app when .apk is downloaded
-        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(ctxt: Context, intent_: Intent) {
-                var intent = intent_
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    val apkUri = FileProvider.getUriForFile(
-                        applicationContext, APP_ID + ".provider", file
-                    )
-                    intent = Intent(Intent.ACTION_VIEW)
-                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
-                    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
+            // get download service and enqueue file
+            val manager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            file.setReadable(true, false)
 
-                } else {
-                    val apkUri = Uri.fromFile(file)
-                    intent = Intent(Intent.ACTION_VIEW)
-                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            //set BroadcastReceiver to install app when .apk is downloaded
+            val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(ctxt: Context, intent_: Intent) {
+                    var intent = intent_
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        val apkUri = FileProvider.getUriForFile(
+                            applicationContext, APP_ID + ".provider", file
+                        )
+                        intent = Intent(Intent.ACTION_VIEW)
+                        intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
+                        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
+
+                    } else {
+                        val apkUri = Uri.fromFile(file)
+                        intent = Intent(Intent.ACTION_VIEW)
+                        intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
+                    startActivityForResult(intent, REQUEST_INSTALL)
+                    //startActivity(intent)
+                    unregisterReceiver(this)
+                    //finish()
                 }
-                startActivityForResult(intent, REQUEST_INSTALL)
-                //startActivity(intent)
-                unregisterReceiver(this)
-                //finish()
             }
+
+            //register receiver for when .apk download is compete
+            registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+            manager.enqueue(request)
         }
-
-        //register receiver for when .apk download is compete
-        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        manager.enqueue(request)
-
     }
 
 }
