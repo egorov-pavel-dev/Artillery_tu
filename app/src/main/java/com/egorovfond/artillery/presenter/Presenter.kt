@@ -1,13 +1,17 @@
 package com.egorovfond.artillery.presenter
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.egorovfond.artillery.R
 import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Popravki
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.database.room.entity.WeaponEntity
 import com.egorovfond.artillery.math.Artilery
@@ -30,6 +34,7 @@ class Presenter: ViewModel() {
     @Volatile var currentEnemy: Enemy = Enemy("Нет данных")
     @Volatile var currentTable = mutableListOf<Table>()
     @Volatile var weaponlist = mutableListOf<WeaponEntity>()
+    val heightMap = HeightMaps()
 
     val maps = mutableListOf(
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
@@ -539,4 +544,64 @@ class Presenter: ViewModel() {
         DB.dropTables()
     }
     fun initWeapon(weaponID: String) = DB.initWeapon(weaponName = weaponID)
+
+    fun setMapHeight(map: String){
+        heightMap.minHeight = 0f
+        heightMap.maxHeight = 0f
+        heightMap.mapWigth = 0
+        heightMap.mapHeight = 0
+        heightMap.baseGrayMin = 40f
+        heightMap.baseGrayMax = 345f
+        heightMap.int = 0
+
+        if (map.equals("altis")){
+            heightMap.minHeight = 0f
+            heightMap.maxHeight = 350f
+            heightMap.mapWigth = 30720
+            heightMap.mapHeight = 30720
+            heightMap.baseGrayMin = 40f
+            heightMap.baseGrayMax = 345f
+            heightMap.int = R.drawable.altis
+        }
+    }
+    fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Float {
+        val mapHeight = heightMap
+        val height = bmpOriginal.height
+        val width = bmpOriginal.width
+        var gray = 0f
+
+        // get one pixel color
+        val x = ((x_ * 1000) * width / mapHeight.mapWigth).toInt()
+        val y = height - ((y_ * 1000) * height / mapHeight.mapHeight).toInt()
+
+        val pixel = bmpOriginal.getPixel(x,y)
+
+        val red = Color.red(pixel)
+        val green = Color.green(pixel)
+        val blue = Color.blue(pixel)
+
+        gray = ((red * 0.3 + green * 0.59 + blue * 0.11).toFloat())
+
+        val heightScale = (gray * (mapHeight.maxHeight - mapHeight.minHeight) / 255)
+
+        val greyMax = mapHeight.baseGrayMax - mapHeight.baseGrayMin
+        val delta = (mapHeight.maxHeight - mapHeight.minHeight)/(mapHeight.baseGrayMax - mapHeight.baseGrayMin)
+        val centerGrey = (greyMax / 2)
+        val centerHeight = ((mapHeight.maxHeight - mapHeight.minHeight)/2)
+
+        val test = heightScale - mapHeight.baseGrayMin
+        var h = 0f
+
+        h =  if(test == centerGrey) {
+            centerHeight
+        }else if (test > centerGrey){
+            centerHeight + (test - centerGrey) * delta
+        }else{
+            centerHeight - ((centerGrey - test) * delta)
+        }
+
+        if (h < 0) h = 0f
+
+        return h
+    }
 }

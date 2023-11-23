@@ -2,17 +2,20 @@ package com.egorovfond.artillery.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.TargetResultRvAdapter
 import kotlinx.android.synthetic.main.activity_enemy.*
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_h
 
 class EnemyActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
@@ -145,6 +148,25 @@ class EnemyActivity : AppCompatActivity() {
 
             val intent = Intent(this, MapFragment::class.java)
             startActivity(intent)
+        }
+        btn_map_ed_height.setOnClickListener{
+            try {
+                val option = BitmapFactory.Options()
+
+                val bmp = BitmapFactory.decodeResource(
+                    resources, presenter.heightMap.int, option
+                )
+
+                presenter.getTargetList()[presenter.currentEnemy.position].h = presenter.getHeight(
+                    bmp,
+                    presenter.getTargetList()[presenter.currentEnemy.position].x,
+                    presenter.getTargetList()[presenter.currentEnemy.position].y
+                ).toInt()
+                ed_ht.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
+
+            }catch (e: Exception){
+                Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

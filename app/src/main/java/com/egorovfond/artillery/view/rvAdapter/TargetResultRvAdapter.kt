@@ -48,7 +48,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
             btn_change_TH_dot.setOnClickListener {
                 try {
                     presenter.updateDot(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
-                    presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
+                    //presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
                 }catch (e: Throwable){
                     Log.d(TAG, "bind: $e")
                 }
@@ -61,7 +61,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
             btn_change_TH_dot_prilet.setOnClickListener {
                 try {
                     presenter.updateDotPrilet(presenter.getResultAbout()[position])
-                    presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
+                    //presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
                 }catch (e: Throwable){
                     Log.d(TAG, "bind: $e")
                 }

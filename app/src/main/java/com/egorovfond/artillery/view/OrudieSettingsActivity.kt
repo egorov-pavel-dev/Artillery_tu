@@ -1,18 +1,38 @@
 package com.egorovfond.artillery.view
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
-import kotlinx.android.synthetic.main.activity_orudie_settings.*
+import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_height
+import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_orudie
+import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_th
+import kotlinx.android.synthetic.main.activity_orudie_settings.ed_x_TH
+import kotlinx.android.synthetic.main.activity_orudie_settings.ed_x_minomet
+import kotlinx.android.synthetic.main.activity_orudie_settings.ed_y_TH
+import kotlinx.android.synthetic.main.activity_orudie_settings.ed_y_minomet
+import kotlinx.android.synthetic.main.activity_orudie_settings.orudie_weapon_base
+import kotlinx.android.synthetic.main.activity_orudie_settings.orudie_weapon_bullet
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_azimut_th
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_h
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_load
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_name
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_save
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_updateTH
+import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_weapon
+import java.net.URL
+
 
 class OrudieSettingsActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
@@ -212,6 +232,26 @@ class OrudieSettingsActivity : AppCompatActivity() {
                 presenter.setBulletIntoOrudie("")
             }
         }
+
+        btn_map_height.setOnClickListener {
+            try {
+                val option = BitmapFactory.Options()
+
+                val bmp = BitmapFactory.decodeResource(
+                    resources, presenter.heightMap.int, option
+                )
+
+                presenter.getCurrentWeapon().h = presenter.getHeight(
+                    bmp,
+                    presenter.getCurrentWeapon().x,
+                    presenter.getCurrentWeapon().y
+                ).toInt()
+                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+
+            }catch (e: Exception){
+                Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun save() {
@@ -232,6 +272,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
 
         updateForm()
     }
+
     override fun onStop() {
         super.onStop()
 
@@ -272,8 +313,10 @@ class OrudieSettingsActivity : AppCompatActivity() {
 //        if (presenter.getCurrentWeapon().bullet.isEmpty()) positionBullet = -1
 //        else positionBullet = bulletAdapter.getPosition(presenter.getCurrentWeapon().bullet)
     }
+
     private fun updateAzimutTh() {
         presenter.updateOrudieByXY(presenter.getWeapon()[presenter.getCurrentWeapon().position])
         weapon_settings_azimut_th.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
     }
+
 }

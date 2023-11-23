@@ -81,9 +81,15 @@
                 android:text="@string/map_prilet" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_margin="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -92,7 +98,16 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/h_target"
                 android:inputType="numberSigned|number|numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_map_ed_height"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:text="@string/btn_map_height" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
         <CheckBox
             android:id="@+id/checkBox_enemy"
             android:layout_width="wrap_content"
