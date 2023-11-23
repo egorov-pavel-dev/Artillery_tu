@@ -560,7 +560,7 @@ class Presenter: ViewModel() {
             heightMap.mapWigth = 30720
             heightMap.mapHeight = 30720
             heightMap.baseGrayMin = 40f
-            heightMap.baseGrayMax = 345f
+            heightMap.baseGrayMax = 343f
             heightMap.int = R.drawable.altis
         }
     }
