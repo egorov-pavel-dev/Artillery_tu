@@ -52,6 +52,8 @@ class MapFragment() : AppCompatActivity() {
             it.setOnItemClickListener { parent, view, position, id ->
                 run {
                     presenter.url = mapAdapter.getItem(position).toString()
+                    presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
+
                     updateWebView()
                 }
             }
