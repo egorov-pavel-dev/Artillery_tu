@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.egorovfond.artillery.R
@@ -53,7 +54,6 @@ class MapFragment() : AppCompatActivity() {
                 run {
                     presenter.url = mapAdapter.getItem(position).toString()
                     presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
-
                     updateWebView()
                 }
             }

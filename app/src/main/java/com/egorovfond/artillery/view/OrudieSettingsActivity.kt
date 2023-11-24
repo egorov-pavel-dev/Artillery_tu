@@ -3,18 +3,23 @@ package com.egorovfond.artillery.view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.egorovfond.artillery.R
-import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_height
 import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_orudie
 import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_th
@@ -31,7 +36,6 @@ import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_n
 import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_save
 import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_updateTH
 import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_weapon
-import java.net.URL
 
 
 class OrudieSettingsActivity : AppCompatActivity() {
@@ -234,20 +238,33 @@ class OrudieSettingsActivity : AppCompatActivity() {
         }
 
         btn_map_height.setOnClickListener {
+            Toast.makeText(this@OrudieSettingsActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
-                val option = BitmapFactory.Options()
+                val image = ImageView(this)
+                val path = "file:///android_asset/${presenter.url}.png"
+                Picasso.get().load(path)
+                    .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
+                    //.fit()
+                    .into(image, object : Callback{
+                        override fun onSuccess() {
+                            val bitmap = (image.drawable as BitmapDrawable).bitmap
+                            bitmap?.let {
+                                presenter.getCurrentWeapon().h = presenter.getHeight(
+                                    it,
+                                    presenter.getCurrentWeapon().x,
+                                    presenter.getCurrentWeapon().y
+                                ).toInt()
 
-                val bmp = BitmapFactory.decodeResource(
-                    resources, presenter.heightMap.int, option
-                )
+                                Toast.makeText(this@OrudieSettingsActivity, "Высота орудия: ${presenter.getCurrentWeapon().h}", Toast.LENGTH_LONG).show()
+                                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+                            }
+                        }
 
-                presenter.getCurrentWeapon().h = presenter.getHeight(
-                    bmp,
-                    presenter.getCurrentWeapon().x,
-                    presenter.getCurrentWeapon().y
-                ).toInt()
-                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+                        override fun onError(e: java.lang.Exception?) {
+                            Toast.makeText(this@OrudieSettingsActivity, "Не удалось загрузить карту высот: ${e!!.message}", Toast.LENGTH_LONG).show()
+                        }
 
+                    })
             }catch (e: Exception){
                 Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
             }

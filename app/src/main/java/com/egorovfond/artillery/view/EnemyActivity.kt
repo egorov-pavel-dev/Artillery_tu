@@ -3,17 +3,21 @@ package com.egorovfond.artillery.view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.TargetResultRvAdapter
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_enemy.*
 import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_h
 
@@ -150,20 +154,33 @@ class EnemyActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btn_map_ed_height.setOnClickListener{
+            Toast.makeText(this@EnemyActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
-                val option = BitmapFactory.Options()
+                val image = ImageView(this)
+                val path = "file:///android_asset/${presenter.url}.png"
+                Picasso.get().load(path)
+                    .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
+                    //.fit()
+                    .into(image, object : Callback {
+                        override fun onSuccess() {
+                            val bitmap = (image.drawable as BitmapDrawable).bitmap
+                            bitmap?.let {
+                                presenter.getTargetList()[presenter.currentEnemy.position].h = presenter.getHeight(
+                                    it,
+                                    presenter.getTargetList()[presenter.currentEnemy.position].x,
+                                    presenter.getTargetList()[presenter.currentEnemy.position].y
+                                ).toInt()
 
-                val bmp = BitmapFactory.decodeResource(
-                    resources, presenter.heightMap.int, option
-                )
+                                Toast.makeText(this@EnemyActivity, "Высота орудия: ${presenter.getCurrentWeapon().h}", Toast.LENGTH_LONG).show()
+                                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+                            }
+                        }
 
-                presenter.getTargetList()[presenter.currentEnemy.position].h = presenter.getHeight(
-                    bmp,
-                    presenter.getTargetList()[presenter.currentEnemy.position].x,
-                    presenter.getTargetList()[presenter.currentEnemy.position].y
-                ).toInt()
-                ed_ht.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
+                        override fun onError(e: java.lang.Exception?) {
+                            Toast.makeText(this@EnemyActivity, "Не удалось загрузить карту высот: ${e!!.message}", Toast.LENGTH_LONG).show()
+                        }
 
+                    })
             }catch (e: Exception){
                 Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
             }

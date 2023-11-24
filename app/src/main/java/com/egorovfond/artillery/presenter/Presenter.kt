@@ -559,9 +559,9 @@ class Presenter: ViewModel() {
             heightMap.maxHeight = 350f
             heightMap.mapWigth = 30720
             heightMap.mapHeight = 30720
-            heightMap.baseGrayMin = 40f
-            heightMap.baseGrayMax = 344f
-            heightMap.int = R.drawable.altis
+            heightMap.baseGrayMin = 0f
+            heightMap.baseGrayMax = 119.5f
+            //heightMap.int = id
         }
     }
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Float {
@@ -571,15 +571,16 @@ class Presenter: ViewModel() {
         var gray = 0f
 
         // get one pixel color
-        val x = ((x_ * 1000) * width / mapHeight.mapWigth).toInt()
-        val y = height - ((y_ * 1000) * height / mapHeight.mapHeight).toInt()
+        val x = x_ * 100 //((x_ * 1000) * width / mapHeight.mapWigth).toInt()
+        val y = y_ * 100 //((y_ * 1000) * height / mapHeight.mapHeight).toInt()
 
-        val pixel = bmpOriginal.getPixel(x,y)
+        val pixel = bmpOriginal.getPixel(x.toInt(),y.toInt())
 
         val red = Color.red(pixel)
         val green = Color.green(pixel)
         val blue = Color.blue(pixel)
 
+        val h_1 = pixel * 1024 / (256*256) - 100
         gray = ((red * 0.3 + green * 0.59 + blue * 0.11).toFloat())
 
         val heightScale = (gray * (mapHeight.maxHeight - mapHeight.minHeight) / 255)

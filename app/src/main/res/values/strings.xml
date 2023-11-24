@@ -109,4 +109,5 @@
     <string name="title_vt7_part1">Vt7 (part1)</string>
     <string name="title_vt7_part2">Vt7 (part2)</string>
     <string name="btn_map_height">Рассчетать</string>
+    <string name="title_altis_heightmap">Altis (Height map)</string>
 </resources>
