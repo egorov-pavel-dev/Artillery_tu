@@ -160,6 +160,7 @@ class EnemyActivity : AppCompatActivity() {
                 val path = "file:///android_asset/${presenter.url}.png"
                 Picasso.get().load(path)
                     .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
+                    .onlyScaleDown()
                     //.fit()
                     .into(image, object : Callback {
                         override fun onSuccess() {
@@ -171,8 +172,8 @@ class EnemyActivity : AppCompatActivity() {
                                     presenter.getTargetList()[presenter.currentEnemy.position].y
                                 ).toInt()
 
-                                Toast.makeText(this@EnemyActivity, "Высота орудия: ${presenter.getCurrentWeapon().h}", Toast.LENGTH_LONG).show()
-                                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+                                Toast.makeText(this@EnemyActivity, "Высота цели: ${presenter.getTargetList()[presenter.currentEnemy.position].h}", Toast.LENGTH_LONG).show()
+                                ed_ht.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
                             }
                         }
 

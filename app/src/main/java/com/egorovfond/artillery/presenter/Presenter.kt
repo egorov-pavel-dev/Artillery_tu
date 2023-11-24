@@ -571,8 +571,8 @@ class Presenter: ViewModel() {
         var gray = 0f
 
         // get one pixel color
-        val x = x_ * 100 //((x_ * 1000) * width / mapHeight.mapWigth).toInt()
-        val y = y_ * 100 //((y_ * 1000) * height / mapHeight.mapHeight).toInt()
+        val x = (x_ * 1000) * width / mapHeight.mapWigth
+        val y = (y_ * 1000) * height / mapHeight.mapHeight
 
         val pixel = bmpOriginal.getPixel(x.toInt(),y.toInt())
 
