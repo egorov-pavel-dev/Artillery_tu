@@ -173,6 +173,9 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("altis_part2")){
                             modules.add("altis_part2")
                         }
+                        if (globalSplitInstallManager.installedModules.contains("altis_heightmap")){
+                            modules.add("altis_heightmap")
+                        }
                         globalSplitInstallManager.startUninstall(modules)
                     } else if (nameModule.equals("pecher")) {
                         val modules =
@@ -225,7 +228,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         request_par.addModule("altis_part0")
                         request_par.addModule("altis_part1")
                         request_par.addModule("altis_part2")
-
+                        request_par.addModule("altis_heightmap")
                     } else if (nameModule.equals("pecher")) {
                         request_par.addModule("pecher_part1")
 
