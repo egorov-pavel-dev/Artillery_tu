@@ -11,6 +11,7 @@ import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Popravki
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.data.heightMap.HeightMap
 import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.database.room.entity.WeaponEntity
@@ -35,6 +36,7 @@ class Presenter: ViewModel() {
     @Volatile var currentTable = mutableListOf<Table>()
     @Volatile var weaponlist = mutableListOf<WeaponEntity>()
     val heightMap = HeightMaps()
+    val currentHeightMap = mutableListOf<HeightMap>()
 
     val maps = mutableListOf(
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
@@ -557,8 +559,8 @@ class Presenter: ViewModel() {
         if (map.equals("altis")){
             heightMap.minHeight = 0f
             heightMap.maxHeight = 350f
-            heightMap.mapWigth = 30720
-            heightMap.mapHeight = 30720
+            heightMap.mapWigth = 30721
+            heightMap.mapHeight = 30721
             heightMap.baseGrayMin = 0f
             heightMap.baseGrayMax = 119.5f
             //heightMap.int = id

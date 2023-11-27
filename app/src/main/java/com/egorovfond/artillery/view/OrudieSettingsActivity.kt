@@ -245,7 +245,6 @@ class OrudieSettingsActivity : AppCompatActivity() {
                 Picasso.get().load(path)
                     .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
                     .onlyScaleDown()
-                    //.fit()
                     .into(image, object : Callback{
                         override fun onSuccess() {
                             val bitmap = (image.drawable as BitmapDrawable).bitmap

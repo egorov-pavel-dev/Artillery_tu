@@ -103,7 +103,6 @@ class MapFragment() : AppCompatActivity() {
 
     fun updateWebView(){
         if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
-        //if (presenter.url.isNotEmpty()) webview_map.loadUrl("https://jetelain.github.io/Arma3Map/panthera3.html")
     }
 
     class Callback: WebViewClient(){
