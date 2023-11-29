@@ -187,12 +187,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("lythium_part2")){
                             modules.add("lythium_part2")
                         }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part3")){
-                            modules.add("lythium_part3")
-                        }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part4")){
-                            modules.add("lythium_part4")
-                        }
                     } else if (nameModule.equals("vt7")) {
                         if (globalSplitInstallManager.installedModules.contains("vt7_part0")){
                             modules.add("vt7_part0")
@@ -233,22 +227,16 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 } else {
                     val request_par = GlobalSplitInstallRequest.newBuilder()
                         .addModule(nameModule)
-
                     if (nameModule.equals("altis")) {
                         request_par.addModule("altis_part0")
                         request_par.addModule("altis_part1")
                         request_par.addModule("altis_part2")
-
                     } else if (nameModule.equals("pecher")) {
                         request_par.addModule("pecher_part1")
-
                     } else if (nameModule.equals("lythium")) {
                         request_par.addModule("lythium_part0")
                         request_par.addModule("lythium_part1")
                         request_par.addModule("lythium_part2")
-                        request_par.addModule("lythium_part3")
-                        request_par.addModule("lythium_part4")
-
                     } else if (nameModule.equals("vt7")) {
                         request_par.addModule("vt7_part0")
                         request_par.addModule("vt7_part1")
