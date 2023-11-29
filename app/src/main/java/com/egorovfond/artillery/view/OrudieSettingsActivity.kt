@@ -241,10 +241,11 @@ class OrudieSettingsActivity : AppCompatActivity() {
             Toast.makeText(this@OrudieSettingsActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
                 val image = ImageView(this)
-                val path = "file:///android_asset/${presenter.url}.png"
+                val part = (Math.round((presenter.getCurrentWeapon().x * 1000)) / presenter.heightMap.part).toInt()
+                val path = "file:///android_asset/${presenter.url}_${part}.png"
                 Picasso.get().load(path)
-                    .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
-                    .onlyScaleDown()
+                    //.resize((presenter.heightMap.mapWigth * presenter.heightMap.scale).toInt(), (presenter.heightMap.mapHeight * presenter.heightMap.scale).toInt())
+                    //.onlyScaleDown()
                     .into(image, object : Callback{
                         override fun onSuccess() {
                             val bitmap = (image.drawable as BitmapDrawable).bitmap
@@ -269,16 +270,6 @@ class OrudieSettingsActivity : AppCompatActivity() {
                 Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    private fun save() {
-//        if (weapon_settings_azimut_th.text?.equals("") == true || weapon_settings_azimut_th.text?.toString()?.toInt()  == 0){
-//            presenter.updateOrudieByXY(presenter.getCurrentWeapon())
-//        }else{
-//            presenter.updateTHbyAzimut(presenter.getCurrentWeapon())
-//        }
-//
-//        presenter.saveOrudie()
     }
 
     override fun onStart() {
@@ -320,15 +311,6 @@ class OrudieSettingsActivity : AppCompatActivity() {
         weapon_settings_weapon.hint = presenter.getCurrentWeapon().weapon
         orudie_weapon_bullet.hint = if (presenter.getCurrentWeapon().bullet.isEmpty()) {"Автовыбор"} else presenter.getCurrentWeapon().bullet
         orudie_weapon_base.hint = if (presenter.getCurrentWeapon().base.isEmpty()) {"не задано"} else presenter.getCurrentWeapon().base
-//
-//        if (presenter.getCurrentWeapon().weapon.isEmpty()) positionWeapon = -1
-//        else positionWeapon = weaponAdapter.getPosition(presenter.getCurrentWeapon().weapon)
-//
-//        if (presenter.getCurrentWeapon().base.isEmpty()) positionBase = -1
-//        else positionBase = baseAdapter.getPosition(presenter.getCurrentWeapon().base)
-//
-//        if (presenter.getCurrentWeapon().bullet.isEmpty()) positionBullet = -1
-//        else positionBullet = bulletAdapter.getPosition(presenter.getCurrentWeapon().bullet)
     }
 
     private fun updateAzimutTh() {

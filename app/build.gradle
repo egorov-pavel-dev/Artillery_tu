@@ -58,12 +58,11 @@ android {
             serverUrl 'http://77.66.177.30:52111'
             username 'server'
             password 'pwd'
-            //throttleDownloadBy 3000
             applyToBuildVariants 'debug', 'release'
         }
     }
     dynamicFeatures = [
-            ':zargabad', ':takistan', ':altis', ':chernarus', ':chongo', ':dingor', ':eden', ':enoch', ':lythium', ':kujari', ':malden', ':mcn_aliabad', ':mcn_hazarkot', ':mountains_acr', ':napf', ':pabst_yellowstone', ':panthera3', ':ruha', ':sara', ':sara_dbe1', ':seangola', ':stratis', ':tanoa', ':taunus', ':tem_anizay', ':tem_suursaariv', ':uzbin', ':vt7', ':wl_rosche', ':woodland_acr', ':cup_chernarus_a3', ':pja314', ':lythium_part0', ':lythium_part1', ':lythium_part2', ':lythium_part3', ':lythium_part4', ':pecher', ':pecher_part1', ':altis_part0', ':altis_part1', ':altis_part2', ':brf_sumava', ':fallujahint', ':vt7_part0', ':vt7_part1', ':vt7_part2', ':altis_heightmap', ':ruha_heightmap'
+            ':zargabad', ':takistan', ':altis', ':chernarus', ':chongo', ':dingor', ':eden', ':enoch', ':lythium', ':kujari', ':malden', ':mcn_aliabad', ':mcn_hazarkot', ':mountains_acr', ':napf', ':pabst_yellowstone', ':panthera3', ':ruha', ':sara', ':sara_dbe1', ':seangola', ':stratis', ':tanoa', ':taunus', ':tem_anizay', ':tem_suursaariv', ':uzbin', ':vt7', ':wl_rosche', ':woodland_acr', ':cup_chernarus_a3', ':pja314', ':lythium_part0', ':lythium_part1', ':lythium_part2', ':lythium_part3', ':lythium_part4', ':pecher', ':pecher_part1', ':altis_part0', ':altis_part1', ':altis_part2', ':brf_sumava', ':fallujahint', ':vt7_part0', ':vt7_part1', ':vt7_part2', ':altis_heightmap', ':ruha_heightmap', ':lythium_heightmap', ':pja314_heightmap', ':fallujahint_heightmap', ':takistan_heightmap', ':wl_rosche_heightmap', ':brf_sumava_heightmap', ':chernarus_heightmap', ':chongo_heightmap', ':dingor_heightmap', ':eden_heightmap', ':enoch_heightmap', ':kujari_heightmap', ':malden_heightmap', ':mcn_aliabad_heightmap', ':mcn_hazarkot_heightmap', ':mountains_acr_heightmap', ':pabst_yellowstone_heightmap', ':panthera3_heightmap', ':pecher_heightmap', ':sara_heightmap', ':sara_dbe1_heightmap', ':seangola_heightmap', ':stratis_heightmap', ':tanoa_heightmap', ':taunus_heightmap', ':tem_anizay_heightmap', ':tem_suursaariv_heightmap', ':uzbin_heightmap', ':vt7_heightmap', ':woodland_acr_heightmap', ':zargabad_heightmap', ':pja314_part0', ':pja314_part1', ':pja314_part2', ':takistan_part0', ':takistan_part1', ':takistan_part2'
     ]
 
 }

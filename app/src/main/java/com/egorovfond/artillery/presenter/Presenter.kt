@@ -19,6 +19,7 @@ import com.egorovfond.artillery.math.Artilery
 import com.egorovfond.artillery.math.Azimut
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.math.Map
+import kotlin.math.round
 
 const val BULLET_NOTHING = "Не выбран"
 
@@ -36,7 +37,6 @@ class Presenter: ViewModel() {
     @Volatile var currentTable = mutableListOf<Table>()
     @Volatile var weaponlist = mutableListOf<WeaponEntity>()
     val heightMap = HeightMaps()
-    val currentHeightMap = mutableListOf<HeightMap>()
 
     val maps = mutableListOf(
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
@@ -552,59 +552,68 @@ class Presenter: ViewModel() {
         heightMap.maxHeight = 0f
         heightMap.mapWigth = 0
         heightMap.mapHeight = 0
-        heightMap.baseGrayMin = 40f
-        heightMap.baseGrayMax = 345f
-        heightMap.int = 0
+        heightMap.part = 40000
 
         if (map.equals("altis")){
-            heightMap.minHeight = 0f
             heightMap.maxHeight = 350f
-            heightMap.mapWigth = 30721
-            heightMap.mapHeight = 30721
-            heightMap.baseGrayMin = 0f
-            heightMap.baseGrayMax = 119.5f
-            //heightMap.int = id
+            heightMap.mapWigth = 30720
+            heightMap.mapHeight = 30720
+            heightMap.part = 3072
+
+        }
+        if (map.equals("ruha")){
+            heightMap.maxHeight = 73f
+            heightMap.mapWigth = 8192
+            heightMap.mapHeight = 8192
+            heightMap.part = 8193
+        }
+        if (map.equals("lythium")){
+            heightMap.maxHeight = 1335f
+            heightMap.mapWigth = 20480
+            heightMap.mapHeight = 20480
+            heightMap.part = 2048
+        }
+        if (map.equals("fallujahint")){
+            heightMap.maxHeight = 51f
+            heightMap.mapWigth = 10240
+            heightMap.mapHeight = 10240
+            heightMap.part = 2560
+        }
+        if (map.equals("pja314")){
+            heightMap.maxHeight = 238f
+            heightMap.mapWigth = 20480
+            heightMap.mapHeight = 20480
+            heightMap.part = 2048
+        }
+        if (map.equals("takistan")){
+            heightMap.maxHeight = 850f
+            heightMap.mapWigth = 12800
+            heightMap.mapHeight = 12800
+            heightMap.part = 3200
+        }
+        if (map.equals("wl_rosche")){
+            heightMap.maxHeight = 56f
+            heightMap.mapWigth = 15360
+            heightMap.mapHeight = 15360
+            heightMap.part = 3840
         }
     }
-    fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Float {
+    fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {
         val mapHeight = heightMap
-        val height = bmpOriginal.height
-        val width = bmpOriginal.width
-        var gray = 0f
+
+        val part = (Math.round((x_ * 1000)) / mapHeight.part).toInt()
+
 
         // get one pixel color
-        val x = (x_ * 1000) * width / mapHeight.mapWigth
-        val y = (y_ * 1000) * height / mapHeight.mapHeight
+        val x = Math.round((x_ * 1000)) - (part * mapHeight.part)
+        val y = Math.round((y_ * 1000))
 
         val pixel = bmpOriginal.getPixel(x.toInt(),y.toInt())
-
         val red = Color.red(pixel)
-        val green = Color.green(pixel)
-        val blue = Color.blue(pixel)
 
-        val h_1 = pixel * 1024 / (256*256) - 100
-        gray = ((red * 0.3 + green * 0.59 + blue * 0.11).toFloat())
+        var h = Math.round((red.toFloat() / 255) * (heightMap.maxHeight - heightMap.minHeight))
 
-        val heightScale = (gray * (mapHeight.maxHeight - mapHeight.minHeight) / 255)
-
-        val greyMax = mapHeight.baseGrayMax - mapHeight.baseGrayMin
-        val delta = (mapHeight.maxHeight - mapHeight.minHeight)/(mapHeight.baseGrayMax - mapHeight.baseGrayMin)
-        val centerGrey = (greyMax / 2)
-        val centerHeight = ((mapHeight.maxHeight - mapHeight.minHeight)/2)
-
-        val test = heightScale - mapHeight.baseGrayMin
-        var h = 0f
-
-        h =  if(test == centerGrey) {
-            centerHeight
-        }else if (test > centerGrey){
-            centerHeight + (test - centerGrey) * delta
-        }else{
-            centerHeight - ((centerGrey - test) * delta)
-        }
-
-        if (h < 0) h = 0f
-
+        if (h < 0) h = 0
         return h
     }
 }

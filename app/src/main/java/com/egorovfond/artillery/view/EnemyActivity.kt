@@ -157,10 +157,11 @@ class EnemyActivity : AppCompatActivity() {
             Toast.makeText(this@EnemyActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
                 val image = ImageView(this)
-                val path = "file:///android_asset/${presenter.url}.png"
+                val part = (Math.round((presenter.getTargetList()[presenter.currentEnemy.position].x * 1000)) / presenter.heightMap.part).toInt()
+                val path = "file:///android_asset/${presenter.url}_${part}.png"
                 Picasso.get().load(path)
-                    .resize((presenter.heightMap.mapWigth)/10, presenter.heightMap.mapHeight/10)
-                    .onlyScaleDown()
+                    //.resize((presenter.heightMap.mapWigth * presenter.heightMap.scale).toInt(), (presenter.heightMap.mapHeight * presenter.heightMap.scale).toInt())
+                    //.onlyScaleDown()
                     .into(image, object : Callback {
                         override fun onSuccess() {
                             val bitmap = (image.drawable as BitmapDrawable).bitmap
