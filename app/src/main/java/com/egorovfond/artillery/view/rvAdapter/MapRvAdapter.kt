@@ -219,9 +219,9 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         }
                     }
 
-                    if (globalSplitInstallManager.installedModules.contains("${nameModule}_heightmap")){
-                        modules.add("${nameModule}_heightmap")
-                    }
+//                    if (globalSplitInstallManager.installedModules.contains("${nameModule}_heightmap")){
+//                        modules.add("${nameModule}_heightmap")
+//                    }
 
                     globalSplitInstallManager.startUninstall(modules)
                 } else {
@@ -251,7 +251,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         request_par.addModule("takistan_part2")
                     }
 
-                    request_par.addModule("${nameModule}_heightmap")
+                    //request_par.addModule("${nameModule}_heightmap")
 
                     val request = request_par.build()
                     globalSplitInstallManager.startInstall(request)
