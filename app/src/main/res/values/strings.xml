@@ -109,4 +109,10 @@
     <string name="title_vt7_part1">Vt7 (part1)</string>
     <string name="title_vt7_part2">Vt7 (part2)</string>
     <string name="btn_map_height">Рассчетать</string>
+    <string name="title_pja314_part0">pja314 (part0)</string>
+    <string name="title_pja314_part1">pja314 (part1)</string>
+    <string name="title_pja314_part2">pja314 (patr2)</string>
+    <string name="title_takistan_part0">takistan (part0)</string>
+    <string name="title_takistan_part1">takistan (part1)</string>
+    <string name="title_takistan_part2">takistan (part2)</string>
 </resources>

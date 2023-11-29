@@ -161,9 +161,9 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
             installUninstallrequest =
                 if (globalSplitInstallManager.installedModules.contains(nameModule)) {
+                    val modules =
+                        mutableListOf(nameModule)
                     if (nameModule.equals("altis")) {
-                        val modules =
-                            mutableListOf("altis")
                         if (globalSplitInstallManager.installedModules.contains("altis_part0")){
                             modules.add("altis_part0")
                         }
@@ -173,17 +173,11 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("altis_part2")){
                             modules.add("altis_part2")
                         }
-                        globalSplitInstallManager.startUninstall(modules)
                     } else if (nameModule.equals("pecher")) {
-                        val modules =
-                            mutableListOf("pecher")
                         if (globalSplitInstallManager.installedModules.contains("pecher_part1")){
                             modules.add("pecher_part1")
                         }
-                        globalSplitInstallManager.startUninstall(modules)
                     } else if (nameModule.equals("lythium")) {
-                        val modules =
-                            mutableListOf("lythium")
                         if (globalSplitInstallManager.installedModules.contains("lythium_part0")){
                             modules.add("lythium_part0")
                         }
@@ -193,17 +187,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("lythium_part2")){
                             modules.add("lythium_part2")
                         }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part3")){
-                            modules.add("lythium_part3")
-                        }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part4")){
-                            modules.add("lythium_part4")
-                        }
-
-                        globalSplitInstallManager.startUninstall(modules)
                     } else if (nameModule.equals("vt7")) {
-                        val modules =
-                            mutableListOf("vt7")
                         if (globalSplitInstallManager.installedModules.contains("vt7_part0")){
                             modules.add("vt7_part0")
                         }
@@ -213,34 +197,61 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("vt7_part2")){
                             modules.add("vt7_part2")
                         }
-                        globalSplitInstallManager.startUninstall(modules)
-                    } else {
-                        globalSplitInstallManager.startUninstall(listOf(nameModule))
+                    } else if (nameModule.equals("pja314")) {
+                        if (globalSplitInstallManager.installedModules.contains("pja314_part0")){
+                            modules.add("pja314_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("pja314_part1")){
+                            modules.add("pja314_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("pja314_part2")){
+                            modules.add("pja314_part2")
+                        }
+                    } else if (nameModule.equals("takistan")) {
+                        if (globalSplitInstallManager.installedModules.contains("takistan_part0")){
+                            modules.add("takistan_part0")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("takistan_part1")){
+                            modules.add("takistan_part1")
+                        }
+                        if (globalSplitInstallManager.installedModules.contains("takistan_part2")){
+                            modules.add("takistan_part2")
+                        }
                     }
+
+//                    if (globalSplitInstallManager.installedModules.contains("${nameModule}_heightmap")){
+//                        modules.add("${nameModule}_heightmap")
+//                    }
+
+                    globalSplitInstallManager.startUninstall(modules)
                 } else {
                     val request_par = GlobalSplitInstallRequest.newBuilder()
                         .addModule(nameModule)
-
                     if (nameModule.equals("altis")) {
                         request_par.addModule("altis_part0")
                         request_par.addModule("altis_part1")
                         request_par.addModule("altis_part2")
-
                     } else if (nameModule.equals("pecher")) {
                         request_par.addModule("pecher_part1")
-
                     } else if (nameModule.equals("lythium")) {
                         request_par.addModule("lythium_part0")
                         request_par.addModule("lythium_part1")
                         request_par.addModule("lythium_part2")
-                        request_par.addModule("lythium_part3")
-                        request_par.addModule("lythium_part4")
-
                     } else if (nameModule.equals("vt7")) {
                         request_par.addModule("vt7_part0")
                         request_par.addModule("vt7_part1")
                         request_par.addModule("vt7_part2")
+                    } else if (nameModule.equals("pja314")) {
+                        request_par.addModule("pja314_part0")
+                        request_par.addModule("pja314_part1")
+                        request_par.addModule("pja314_part2")
+                    } else if (nameModule.equals("takistan")) {
+                        request_par.addModule("takistan_part0")
+                        request_par.addModule("takistan_part1")
+                        request_par.addModule("takistan_part2")
                     }
+
+                    //request_par.addModule("${nameModule}_heightmap")
 
                     val request = request_par.build()
                     globalSplitInstallManager.startInstall(request)
