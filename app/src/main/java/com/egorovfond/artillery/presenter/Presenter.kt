@@ -595,6 +595,48 @@ class Presenter: ViewModel() {
             heightMap.mapHeight = 15360
             heightMap.part = 3840
         }
+        if (map.equals("chernarus")){
+            heightMap.maxHeight = 550f
+            heightMap.mapWigth = 15360
+            heightMap.mapHeight = 15360
+            heightMap.part = 3840
+        }
+        if (map.equals("brf_sumava")){
+            heightMap.maxHeight = 251f
+            heightMap.mapWigth = 12288
+            heightMap.mapHeight = 12288
+            heightMap.part = 3072
+        }
+        if (map.equals("enoch")){
+            heightMap.maxHeight = 442f
+            heightMap.mapWigth = 12800
+            heightMap.mapHeight = 12800
+            heightMap.part = 3200
+        }
+        if (map.equals("kujari")){
+            heightMap.maxHeight = 61f
+            heightMap.mapWigth = 16384
+            heightMap.mapHeight = 16384
+            heightMap.part = 2048
+        }
+        if (map.equals("malden")){
+            heightMap.maxHeight = 523f
+            heightMap.mapWigth = 12800
+            heightMap.mapHeight = 12800
+            heightMap.part = 3200
+        }
+        if (map.equals("tanoa")){
+            heightMap.maxHeight = 442f
+            heightMap.mapWigth = 15360
+            heightMap.mapHeight = 15360
+            heightMap.part = 3840
+        }
+        if (map.equals("zargabad")){
+            heightMap.maxHeight = 418f
+            heightMap.mapWigth = 8192
+            heightMap.mapHeight = 8192
+            heightMap.part = 2048
+        }
     }
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {
         val mapHeight = heightMap
