@@ -53,6 +53,13 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+    dexOptions {
+        incremental = true;
+        preDexLibraries = false
+        javaMaxHeapSize "8g"
+    }
+
     globallyDynamicServers {
         create("studioIntegrated") {
             serverUrl 'http://77.66.177.30:52111'
@@ -62,7 +69,7 @@ android {
         }
     }
     dynamicFeatures = [
-            ':zargabad', ':takistan', ':altis', ':chernarus', ':chongo', ':dingor', ':eden', ':enoch', ':lythium', ':kujari', ':malden', ':mcn_aliabad', ':mountains_acr', ':napf', ':pabst_yellowstone', ':panthera3', ':ruha', ':sara', ':sara_dbe1', ':seangola', ':stratis', ':tanoa', ':taunus', ':tem_suursaariv', ':uzbin', ':vt7', ':wl_rosche', ':woodland_acr', ':pja314', ':lythium_part0', ':lythium_part1', ':lythium_part2', ':pecher', ':pecher_part1', ':altis_part0', ':altis_part1', ':altis_part2', ':brf_sumava', ':fallujahint', ':vt7_part0', ':vt7_part1', ':vt7_part2', ':pja314_part0', ':pja314_part1', ':pja314_part2', ':takistan_part0', ':takistan_part1', ':takistan_part2'
+            ':zargabad', ':takistan', ':altis', ':chernarus', ':chongo', ':dingor', ':eden', ':enoch', ':lythium', ':kujari', ':malden', ':mcn_aliabad', ':mountains_acr', ':napf', ':pabst_yellowstone', ':panthera3', ':ruha', ':sara', ':sara_dbe1', ':seangola', ':stratis', ':tanoa', ':taunus', ':tem_suursaariv', ':uzbin', ':vt7', ':wl_rosche', ':woodland_acr', ':pja314', ':lythium_part0', ':lythium_part1', ':lythium_part2', ':pecher', ':pecher_part1', ':altis_part0', ':altis_part1', ':altis_part2', ':brf_sumava', ':fallujahint', ':vt7_part0', ':vt7_part1', ':vt7_part2', ':pja314_part0', ':pja314_part1', ':pja314_part2', ':takistan_part0', ':takistan_part1', ':takistan_part2', ':pja310'
     ]
 
 }
