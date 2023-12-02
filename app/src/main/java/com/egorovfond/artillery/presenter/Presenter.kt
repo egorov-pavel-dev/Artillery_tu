@@ -649,6 +649,12 @@ class Presenter: ViewModel() {
             heightMap.mapHeight = 20480
             heightMap.part = 2048
         }
+        if (map.equals("pecher")){
+            heightMap.maxHeight = 418f
+            heightMap.mapWigth = 8192
+            heightMap.mapHeight = 8192
+            heightMap.part = 2048
+        }
     }
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {
         val mapHeight = heightMap
