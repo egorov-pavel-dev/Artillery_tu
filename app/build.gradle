@@ -54,12 +54,6 @@ android {
         jvmTarget = '17'
     }
 
-    dexOptions {
-        incremental = true;
-        preDexLibraries = false
-        javaMaxHeapSize "8g"
-    }
-
     globallyDynamicServers {
         create("studioIntegrated") {
             serverUrl 'http://77.66.177.30:52111'
@@ -96,6 +90,7 @@ android {
             ':stratis',
             ':tanoa',
             ':taunus',
+            ':tem_anizay',
             ':tem_suursaariv',
             ':uzbin',
             ':vt7',
