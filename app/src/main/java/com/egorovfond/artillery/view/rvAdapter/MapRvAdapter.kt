@@ -3,20 +3,12 @@ package com.egorovfond.artillery.view.rvAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getExternalFilesDirs
 import androidx.recyclerview.widget.RecyclerView
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.CardMapListBinding
 import com.egorovfond.artillery.math.Map
 import com.egorovfond.artillery.presenter.Presenter
-import com.google.android.play.core.splitinstall.SplitInstallManager
-import com.google.android.play.core.splitinstall.SplitInstallRequest
-import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
-import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.google.android.play.core.splitinstall.testing.FakeSplitInstallManager
-import com.google.android.play.core.splitinstall.testing.FakeSplitInstallManagerFactory
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallRequest
@@ -27,47 +19,43 @@ import com.jeppeman.globallydynamic.tasks.GlobalSplitInstallTask
 import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallCompleteListener
 import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallFailureListener
 import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
-import kotlinx.android.synthetic.main.card_map_list.view.*
-import java.io.File
-import java.lang.Exception
-import kotlin.math.roundToInt
-
 
 const val INSTALL_REQUEST_CODE = 123
 class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
+    private lateinit var binding: CardMapListBinding
 
     private val mySessionId = mutableListOf<Int>()
     @Volatile private var obj = Any()
 
-    class ViewHolder(itemView: View, mySession : MutableList<Int>, obj_:Any) :
-        RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: CardMapListBinding, mySession : MutableList<Int>, obj_:Any) :
+        RecyclerView.ViewHolder(itemView.root) {
         @Volatile private var nameModule = ""
         @Volatile private var obj = obj_
         private val mySessionId = mySession
 
         private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
-            GlobalSplitInstallManagerFactory.create(itemView.context)
+            GlobalSplitInstallManagerFactory.create(itemView.root.context)
         }
 
         private lateinit var installUninstallrequest : GlobalSplitInstallTask<Int>
 
-        fun bind(map: Map)= with(itemView) {
+        fun bind(map: Map, binding: CardMapListBinding)= with(itemView) {
             map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
 
-            map_rv_isloaded.setOnClickListener {
-                loadMapGlobal(map)
+            binding.mapRvIsloaded.setOnClickListener {
+                loadMapGlobal(map, binding)
             }
 
-            update(map)
+            update(map, binding)
         }
 
-        private fun loadMapGlobal(map: Map) = with(itemView){
+        private fun loadMapGlobal(map: Map, binding: CardMapListBinding) = with(itemView){
             //mySessionId.clear()
             if (mySessionId.size != 0){
                 Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                update(map = map)
+                update(map = map, binding)
                 return@with
             }
 
@@ -92,7 +80,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 override fun onFailure(e: Exception?) {
                     Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
                     map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                    update(map = map)
+                    update(map = map, binding)
                 }
 
             }
@@ -117,14 +105,14 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                 Toast.makeText(itemView.context, "INSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
 
-                                update(map = map)
+                                update(map = map, binding)
 
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLED -> {
                                 Toast.makeText(itemView.context, "UNINSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
-                                update(map = map)
+                                update(map = map, binding)
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLING -> {
@@ -238,12 +226,12 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                 }
         }
 
-        private fun View.update(map: Map) {
+        private fun update(map: Map, binding: CardMapListBinding) {
             clearItem()
 
-            map_rv_name.setText(map.name)
-            map_rv_size.setText("${Math.round(map.size/1024)} Kb")
-            map_rv_isloaded.isChecked = map.isLoaded
+            binding.mapRvName.setText(map.name)
+            binding.mapRvSize.setText("${Math.round(map.size/1024)} Kb")
+            binding.mapRvIsloaded.isChecked = map.isLoaded
         }
 
         fun addItem(session: Int){
@@ -260,16 +248,18 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MapRvAdapter.ViewHolder {
-        return MapRvAdapter.ViewHolder(
-            itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_map_list, parent, false) as View,
+        binding = CardMapListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(
+//            itemView = LayoutInflater.from(parent.context)
+//                .inflate(R.layout.card_map_list, parent, false) as View,
+            itemView = binding,
             mySession = mySessionId,
             obj_ = obj
         )
     }
 
     override fun onBindViewHolder(holder: MapRvAdapter.ViewHolder, position: Int) {
-        holder.bind(presenter.maps[position])
+        holder.bind(presenter.maps[position], binding)
     }
 
     override fun getItemCount(): Int {

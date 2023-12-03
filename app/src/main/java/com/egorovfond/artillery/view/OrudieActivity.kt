@@ -1,22 +1,26 @@
 package com.egorovfond.artillery.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityOrudieBinding
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.OrudieRvAdapter
-import kotlinx.android.synthetic.main.activity_orudie.*
 
 class OrudieActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
     private var adapter: OrudieRvAdapter? = null
+    private lateinit var binding: ActivityOrudieBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_orudie)
+        //setContentView(R.layout.activity_orudie)
+        binding = ActivityOrudieBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        addOrudie.setOnClickListener {
+
+        binding.addOrudie.setOnClickListener {
             presenter.addWeapon()
             updateList()
         }
@@ -38,8 +42,8 @@ class OrudieActivity : AppCompatActivity() {
 
         adapter = OrudieRvAdapter()
 
-        orudie_rv.layoutManager = LinearLayoutManager(this)
-        orudie_rv.adapter = adapter
-        orudie_rv.setHasFixedSize(true)
+        binding.orudieRv.layoutManager = LinearLayoutManager(this)
+        binding.orudieRv.adapter = adapter
+        binding.orudieRv.setHasFixedSize(true)
     }
 }

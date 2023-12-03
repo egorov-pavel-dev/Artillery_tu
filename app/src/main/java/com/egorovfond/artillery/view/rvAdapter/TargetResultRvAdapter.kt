@@ -5,37 +5,37 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.egorovfond.artillery.R
 import com.egorovfond.artillery.data.Result
+import com.egorovfond.artillery.databinding.CardTargetListResultBinding
 import com.egorovfond.artillery.presenter.Presenter
-import kotlinx.android.synthetic.main.card_target_list_result.view.*
 
 class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHolder>() {
+    private lateinit var binding: CardTargetListResultBinding
+
     private val presenter by lazy { Presenter.getPresenter() }
 
-    class ViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: CardTargetListResultBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
 
         private val TAG = "TargetResultRvAdapter"
         private val presenter by lazy { Presenter.getPresenter() }
 
 
-        fun bind(position: Int) = with(itemView) {
-            updateView(presenter.getResultAbout()[position])
+        fun bind(position: Int, binding: CardTargetListResultBinding) = with(itemView) {
+            updateView(presenter.getResultAbout()[position], binding)
 
-            checkBox_mortire.setOnClickListener {
-                presenter.changeMortirResultAbout(position, checkBox_mortire.isChecked)
+            binding.checkBoxMortire.setOnClickListener {
+                presenter.changeMortirResultAbout(position, binding.checkBoxMortire.isChecked)
             }
 
-            checkBox_not_bussol.setOnClickListener {
-                updateView(presenter.getResultAbout()[position])
+            binding.checkBoxNotBussol.setOnClickListener {
+                updateView(presenter.getResultAbout()[position], binding)
             }
-            btn_change_TH_bussol.setOnClickListener {
+            binding.btnChangeTHBussol.setOnClickListener {
                 try {
-                    presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
+                    presenter.updateWeaponTH(binding.btnChangeTHBussol.isChecked, presenter.getResultAbout()[position])
                 }catch (e: Throwable){
                     Log.d(TAG, "bind: $e")
                 }
@@ -45,9 +45,9 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 //                ed_bussol.setText(presenter.getResultAbout()[position].ugol.toString())
 
             }
-            btn_change_TH_dot.setOnClickListener {
+            binding.btnChangeTHDot.setOnClickListener {
                 try {
-                    presenter.updateDot(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
+                    presenter.updateDot(binding.btnChangeTHDot.isChecked, presenter.getResultAbout()[position])
                     //presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
                 }catch (e: Throwable){
                     Log.d(TAG, "bind: $e")
@@ -58,7 +58,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 //                ed_bussol.setText(presenter.getResultAbout()[position].ugol.toString())
 
             }
-            btn_change_TH_dot_prilet.setOnClickListener {
+            binding.btnChangeTHDotPrilet.setOnClickListener {
                 try {
                     presenter.updateDotPrilet(presenter.getResultAbout()[position])
                     //presenter.updateWeaponTH(checkBox_not_bussol.isChecked, presenter.getResultAbout()[position])
@@ -72,7 +72,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 
             }
 
-            ed_bussol.addTextChangedListener(object : TextWatcher {
+            binding.edBussol.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -86,7 +86,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                     }
                 }
             })
-            ed_enemy.addTextChangedListener(object : TextWatcher {
+            binding.edEnemy.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -104,7 +104,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                     }
                 }
             })
-            ed_range.addTextChangedListener(object : TextWatcher {
+            binding.edRange.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -122,33 +122,35 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
         }
 
         @SuppressLint("SetTextI18n")
-        private fun updateView(resultAbout: Result) = with(itemView){
-            text_list_item.setText("${resultAbout.orudie.nameOrudie} Снаряд: ${resultAbout.bullet}")
+        private fun updateView(resultAbout: Result, binding: CardTargetListResultBinding) = with(itemView){
+            binding.textListItem.setText("${resultAbout.orudie.nameOrudie} Снаряд: ${resultAbout.bullet}")
             if (resultAbout.resultPricel == -1){
-                text_list_item_result.setText("Снаряд не подходит")
-            }else     text_list_item_result.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol} (${resultAbout.time}сек.)")
-            ed_bussol.setText(resultAbout.ugol.toString())
-            ed_enemy.setText(resultAbout.azimut_target.toString())
-            ed_range.setText(resultAbout.distace.toString())
-            checkBox_mortire.isChecked = resultAbout.orudie.mortir
+                binding.textListItemResult.setText("Снаряд не подходит")
+            }else     binding.textListItemResult.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol} (${resultAbout.time}сек.)")
+            binding.edBussol.setText(resultAbout.ugol.toString())
+            binding.edEnemy.setText(resultAbout.azimut_target.toString())
+            binding.edRange.setText(resultAbout.distace.toString())
+            binding.checkBoxMortire.isChecked = resultAbout.orudie.mortir
 
-            if (checkBox_not_bussol.isChecked) {
-                ed_bussol_til.isEnabled = false
+            if (binding.checkBoxNotBussol.isChecked) {
+                binding.edBussolTil.isEnabled = false
             }else{
-                ed_bussol_til.isEnabled = true
+                binding.edBussolTil.isEnabled = true
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TargetResultRvAdapter.ViewHolder {
-        return TargetResultRvAdapter.ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_target_list_result, parent, false) as View
-        )
+//        return TargetResultRvAdapter.ViewHolder(
+//            LayoutInflater.from(parent.context)
+//                .inflate(R.layout.card_target_list_result, parent, false) as View
+//        )
+        binding = CardTargetListResultBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: TargetResultRvAdapter.ViewHolder, position: Int) {
-        holder.bind(position)
+        holder.bind(position, binding)
     }
 
     override fun getItemCount(): Int {

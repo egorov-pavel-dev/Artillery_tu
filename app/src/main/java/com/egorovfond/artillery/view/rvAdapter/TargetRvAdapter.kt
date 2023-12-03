@@ -3,26 +3,25 @@ package com.egorovfond.artillery.view.rvAdapter
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.egorovfond.artillery.R
 import com.egorovfond.artillery.data.Enemy
+import com.egorovfond.artillery.databinding.CardTargetListBinding
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.EnemyActivity
-import kotlinx.android.synthetic.main.card_target_list.view.*
 
 class TargetRvAdapter: RecyclerView.Adapter<TargetRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
+    private lateinit var binding: CardTargetListBinding
 
-    class ViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: CardTargetListBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
 
         private val presenter by lazy { Presenter.getPresenter() }
 
-        fun bind(target: Enemy) = with(itemView) {
-            target_list_textView_name.setText(target.nameTarget)
-            target_list_button_edit.setOnClickListener {
+        fun bind(target: Enemy, binding: CardTargetListBinding) = with(itemView) {
+            binding.targetListTextViewName.setText(target.nameTarget)
+            binding.targetListButtonEdit.setOnClickListener {
                 presenter.currentEnemy = target
 
                 val intent = Intent(this.context, EnemyActivity::class.java)
@@ -33,14 +32,16 @@ class TargetRvAdapter: RecyclerView.Adapter<TargetRvAdapter.ViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TargetRvAdapter.ViewHolder {
-        return TargetRvAdapter.ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_target_list, parent, false) as View
-        )
+//        return TargetRvAdapter.ViewHolder(
+//            LayoutInflater.from(parent.context)
+//                .inflate(R.layout.card_target_list, parent, false) as View
+//        )
+        binding = CardTargetListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: TargetRvAdapter.ViewHolder, position: Int) {
-        holder.bind(presenter.getTargetList()[position])
+        holder.bind(presenter.getTargetList()[position], binding)
     }
 
     override fun getItemCount(): Int {

@@ -4,25 +4,24 @@ import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.CardDbtableBinding
 import com.egorovfond.artillery.presenter.Presenter
-import kotlinx.android.synthetic.main.card_dbtable.view.*
 
 class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
     private val presenter by lazy { Presenter.getPresenter() }
+    private lateinit var binding: CardDbtableBinding
 
-    class ViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: CardDbtableBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
 
         private val presenter by lazy { Presenter.getPresenter() }
 
-        fun bind(position: Int) = with(itemView) {
-            update(position)
+        fun bind(position: Int, binding: CardDbtableBinding) = with(itemView) {
+            update(position, binding)
 
-            dbtable_rv_namebullet.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvNamebullet.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -34,10 +33,10 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].bulet = p0.toString().toString()
                 }
             })
-            dbtable_rv_mortire.setOnClickListener {
-                presenter.currentTable[position].mortir = dbtable_rv_mortire.isChecked
+            binding.dbtableRvMortire.setOnClickListener {
+                presenter.currentTable[position].mortir = binding.dbtableRvMortire.isChecked
             }
-            dbtable_rv_distance.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvDistance.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -49,7 +48,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].D = p0.toString().toInt()
                 }
             })
-            dbtable_rv_pricel.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvPricel.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -61,7 +60,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].II = p0.toString().toInt()
                 }
             })
-            dbtable_rv_priel_distance.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvPrielDistance.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -73,7 +72,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].II_delt = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_priel_heigth.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvPrielHeigth.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -85,7 +84,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].IIh_delt = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_divergenshion.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvDivergenshion.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -97,7 +96,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].Z = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_ywind.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvYwind.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -109,7 +108,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].Zw_delt = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_xwind.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvXwind.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -121,7 +120,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].Xw_delt = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_xtis.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvXtis.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -133,7 +132,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].X_tis = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_temp.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvTemp.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -145,7 +144,7 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
                     else presenter.currentTable[position].Xt_delt = p0.toString().toFloat()
                 }
             })
-            dbtable_rv_hum.addTextChangedListener(object : TextWatcher {
+            binding.dbtableRvHum.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -159,31 +158,33 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
             })
         }
 
-        private fun update(position: Int)= with(itemView) {
-            dbtable_rv_namebullet.setText(presenter.currentTable[position].bulet)
-            dbtable_rv_mortire.isChecked = presenter.currentTable[position].mortir
-            dbtable_rv_distance.setText(presenter.currentTable[position].D.toString())
-            dbtable_rv_pricel.setText(presenter.currentTable[position].II.toString())
-            dbtable_rv_priel_distance.setText(presenter.currentTable[position].II_delt.toInt().toString())
-            dbtable_rv_priel_heigth.setText(presenter.currentTable[position].IIh_delt.toInt().toString())
-            dbtable_rv_divergenshion.setText(presenter.currentTable[position].Z.toInt().toString())
-            dbtable_rv_ywind.setText(presenter.currentTable[position].Zw_delt.toInt().toString())
-            dbtable_rv_xwind.setText(presenter.currentTable[position].Xw_delt.toInt().toString())
-            dbtable_rv_xtis.setText(presenter.currentTable[position].X_tis.toInt().toString())
-            dbtable_rv_temp.setText(presenter.currentTable[position].Xt_delt.toInt().toString())
-            dbtable_rv_hum.setText(presenter.currentTable[position].Xh_delt.toInt().toString())
+        private fun update(position: Int, binding: CardDbtableBinding)= with(itemView) {
+            binding.dbtableRvNamebullet.setText(presenter.currentTable[position].bulet)
+            binding.dbtableRvMortire.isChecked = presenter.currentTable[position].mortir
+            binding.dbtableRvDistance.setText(presenter.currentTable[position].D.toString())
+            binding.dbtableRvPricel.setText(presenter.currentTable[position].II.toString())
+            binding.dbtableRvPrielDistance.setText(presenter.currentTable[position].II_delt.toInt().toString())
+            binding.dbtableRvPrielHeigth.setText(presenter.currentTable[position].IIh_delt.toInt().toString())
+            binding.dbtableRvDivergenshion.setText(presenter.currentTable[position].Z.toInt().toString())
+            binding.dbtableRvYwind.setText(presenter.currentTable[position].Zw_delt.toInt().toString())
+            binding.dbtableRvXwind.setText(presenter.currentTable[position].Xw_delt.toInt().toString())
+            binding.dbtableRvXtis.setText(presenter.currentTable[position].X_tis.toInt().toString())
+            binding.dbtableRvTemp.setText(presenter.currentTable[position].Xt_delt.toInt().toString())
+            binding.dbtableRvHum.setText(presenter.currentTable[position].Xh_delt.toInt().toString())
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DBTableRvAdapter.ViewHolder {
+        binding = CardDbtableBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DBTableRvAdapter.ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_dbtable, parent, false) as View
+            binding
+//            LayoutInflater.from(parent.context)
+//                .inflate(R.layout.card_dbtable, parent, false) as View
         )
     }
 
     override fun onBindViewHolder(holder: DBTableRvAdapter.ViewHolder, position: Int) {
-        holder.bind(position)
+        holder.bind(position, binding)
     }
 
     override fun getItemCount(): Int {

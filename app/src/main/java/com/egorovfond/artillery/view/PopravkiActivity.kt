@@ -1,29 +1,33 @@
 package com.egorovfond.artillery.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.egorovfond.artillery.R
+import androidx.appcompat.app.AppCompatActivity
+import com.egorovfond.artillery.databinding.ActivityPopravkiBinding
 import com.egorovfond.artillery.presenter.Presenter
-import kotlinx.android.synthetic.main.activity_popravki.*
 
 class PopravkiActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
+    private lateinit var binding: ActivityPopravkiBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_popravki)
+        binding = ActivityPopravkiBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        button_save_popravki.setOnClickListener {
+        //setContentView(R.layout.activity_popravki)
+
+        binding.buttonSavePopravki.setOnClickListener {
             var windspeed = 0f
-            if(wind_speed.text!!.isNotEmpty()) windspeed = wind_speed.text.toString().toFloat()
+            if(binding.windSpeed.text!!.isNotEmpty()) windspeed = binding.windSpeed.text.toString().toFloat()
             var windcross = 0
-            if(wind_ugol.text!!.isNotEmpty()) windcross = wind_ugol.text.toString().toInt()
+            if(binding.windUgol.text!!.isNotEmpty()) windcross = binding.windUgol.text.toString().toInt()
             var hum= 0f
-            if(humidity.text!!.isNotEmpty()) hum = humidity.text.toString().toFloat()
+            if(binding.humidity.text!!.isNotEmpty()) hum = binding.humidity.text.toString().toFloat()
             var teperature = 0f
-            if(temp.text!!.isNotEmpty()) teperature = temp.text.toString().toFloat()
+            if(binding.temp.text!!.isNotEmpty()) teperature = binding.temp.text.toString().toFloat()
             var radius_ = 0
-            if(radius.text!!.isNotEmpty()) radius_ = radius.text.toString().toInt()
+            if(binding.radius.text!!.isNotEmpty()) radius_ = binding.radius.text.toString().toInt()
 
             presenter.onClick_Save_Popravki(
                 windspeed,
@@ -36,10 +40,10 @@ class PopravkiActivity : AppCompatActivity() {
             this.finish()
         }
 
-        wind_speed.setText(presenter.getPopravki().wind_speed.toString())
-        wind_ugol.setText(presenter.getPopravki().wind_cross.toString())
-        humidity.setText(presenter.getPopravki().humidity.toString())
-        temp.setText(presenter.getPopravki().temp.toString())
-        radius.setText(presenter.getPopravki().radius.toString())
+        binding.windSpeed.setText(presenter.getPopravki().wind_speed.toString())
+        binding.windUgol.setText(presenter.getPopravki().wind_cross.toString())
+        binding.humidity.setText(presenter.getPopravki().humidity.toString())
+        binding.temp.setText(presenter.getPopravki().temp.toString())
+        binding.radius.setText(presenter.getPopravki().radius.toString())
     }
 }

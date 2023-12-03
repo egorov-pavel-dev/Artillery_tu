@@ -2,29 +2,25 @@ package com.egorovfond.artillery.view.db
 
 import android.app.Activity
 import android.app.DownloadManager
-import android.app.PendingIntent.getActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityDbsettingsBinding
 import com.egorovfond.artillery.presenter.Presenter
-import com.egorovfond.artillery.view.INSTALL_REQUEST_CODE
 import com.egorovfond.artillery.view.MapsActivity
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.enums.AppUpdaterError
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
-import kotlinx.android.synthetic.main.activity_dbsettings.*
 import java.io.File
 
 const val REQUEST_INSTALL = 124
@@ -34,36 +30,42 @@ const val appName = "Artillery.apk"
 const val APP_ID = "com.egorovfond.artillery"
 
 class DBSettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDbsettingsBinding
+
     private val presenter by lazy { Presenter.getPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dbsettings)
+//        setContentView(R.layout.activity_dbsettings)
+        binding = ActivityDbsettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        button_settingsdb_weapon.setOnClickListener {
+
+        binding.buttonSettingsdbWeapon.setOnClickListener {
             val intent = Intent(this, DBWeaponActivity::class.java)
             startActivity(intent)
         }
-        button_settingsdb_bullet.setOnClickListener {
+        binding.buttonSettingsdbBullet.setOnClickListener {
             val intent = Intent(this, DBBulletActivity::class.java)
             startActivity(intent)
         }
-        button_settingsdb_table.setOnClickListener {
+        binding.buttonSettingsdbTable.setOnClickListener {
             val intent = Intent(this, DBTableActivity::class.java)
             startActivity(intent)
         }
-        button_settingsdb_maps.setOnClickListener {
+        binding.buttonSettingsdbMaps.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
-        button_settingsdb_reset.setOnClickListener {
+        binding.buttonSettingsdbReset.setOnClickListener {
             presenter.reset()
         }
-        localMap.setOnClickListener {
-            presenter.localmap = localMap.isChecked
+        binding.localMap.setOnClickListener {
+            presenter.localmap = binding.localMap.isChecked
         }
 
-        btn_maps_update.setOnClickListener {
+        binding.btnMapsUpdate.setOnClickListener {
             AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo(gitUser, repo)
@@ -85,11 +87,11 @@ class DBSettingsActivity : AppCompatActivity() {
                 }).start()
         }
 
-        localMap.isChecked = presenter.localmap
+        binding.localMap.isChecked = presenter.localmap
 
         val versionName =  this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 
-        nameVersion.setText(" Версия \n ${versionName} ")
+        binding.nameVersion.setText(" Версия \n ${versionName} ")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
