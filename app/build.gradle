@@ -2,10 +2,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    //id 'kotlin-android-extensions'
-    //id 'kotlin-kapt'
     id 'com.jeppeman.globallydynamic'
-    id 'com.google.devtools.ksp' version '1.8.0-1.0.8'
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13'
 }
 
 android {
@@ -78,9 +76,6 @@ android {
             ':eden',
             ':enoch',
             ':lythium',
-            ':lythium_part0',
-            ':lythium_part1',
-            ':lythium_part2',
             ':kujari',
             ':malden',
             ':mcn_aliabad',
@@ -159,7 +154,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"

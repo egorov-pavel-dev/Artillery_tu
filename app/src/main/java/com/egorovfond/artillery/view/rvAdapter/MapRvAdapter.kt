@@ -161,16 +161,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         if (globalSplitInstallManager.installedModules.contains("altis_part2")){
                             modules.add("altis_part2")
                         }
-                    } else if (nameModule.equals("lythium")) {
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part0")){
-                            modules.add("lythium_part0")
-                        }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part1")){
-                            modules.add("lythium_part1")
-                        }
-                        if (globalSplitInstallManager.installedModules.contains("lythium_part2")){
-                            modules.add("lythium_part2")
-                        }
                     } else if (nameModule.equals("vt7")) {
                         if (globalSplitInstallManager.installedModules.contains("vt7_part0")){
                             modules.add("vt7_part0")
@@ -205,10 +195,6 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                         request_par.addModule("altis_part0")
                         request_par.addModule("altis_part1")
                         request_par.addModule("altis_part2")
-                    } else if (nameModule.equals("lythium")) {
-                        request_par.addModule("lythium_part0")
-                        request_par.addModule("lythium_part1")
-                        request_par.addModule("lythium_part2")
                     } else if (nameModule.equals("vt7")) {
                         request_par.addModule("vt7_part0")
                         request_par.addModule("vt7_part1")
