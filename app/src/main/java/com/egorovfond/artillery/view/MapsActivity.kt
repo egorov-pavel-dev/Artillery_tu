@@ -1,14 +1,23 @@
 package com.egorovfond.artillery.view
 
+import android.Manifest
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.egorovfond.artillery.R
 import com.egorovfond.artillery.databinding.ActivityMapsBinding
 import com.egorovfond.artillery.view.rvAdapter.MapRvAdapter
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
 
 const val INSTALL_REQUEST_CODE = 123
+const val CHANNEL_ID = "Artillery"
 
 class MapsActivity : AppCompatActivity() {
     private var adapter: MapRvAdapter? = null
@@ -22,8 +31,39 @@ class MapsActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel.
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+            mChannel.description = descriptionText
+            val notificationManager = getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(this, arrayOf(POST_NOTIFICATIONS), 1);
+            }
+        }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 1){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            }
+        }
+    }
     override fun onStart() {
         super.onStart()
 

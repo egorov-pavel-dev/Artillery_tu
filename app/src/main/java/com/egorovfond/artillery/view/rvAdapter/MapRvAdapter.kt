@@ -1,14 +1,25 @@
 package com.egorovfond.artillery.view.rvAdapter
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.egorovfond.artillery.R
 import com.egorovfond.artillery.databinding.CardMapListBinding
 import com.egorovfond.artillery.math.Map
 import com.egorovfond.artillery.presenter.Presenter
+import com.egorovfond.artillery.view.CHANNEL_ID
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallRequest
@@ -21,18 +32,19 @@ import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallFailureListener
 import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
 
 const val INSTALL_REQUEST_CODE = 123
+
 class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
 
-    private val mySessionId = mutableListOf<Int>()
+    private val mySessionId = 0
     @Volatile private var obj = Any()
 
-    class ViewHolder(binding_: CardMapListBinding, mySession : MutableList<Int>, obj_:Any) :
+    class ViewHolder(binding_: CardMapListBinding, mySession : Int, obj_:Any) :
         RecyclerView.ViewHolder(binding_.root) {
         val binding: CardMapListBinding = binding_
         @Volatile private var nameModule = ""
         @Volatile private var obj = obj_
-        private val mySessionId = mySession
+        private var mySessionId = mySession
 
         private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
             GlobalSplitInstallManagerFactory.create(binding.root.context)
@@ -52,7 +64,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
         private fun loadMapGlobal(map: Map, binding: CardMapListBinding) = with(itemView){
             //mySessionId.clear()
-            if (mySessionId.size != 0){
+            if (mySessionId != 0){
                 Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
                 update(map = map, binding)
@@ -87,10 +99,10 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
             val listener = object : GlobalSplitInstallUpdatedListener {
                 override fun onStateUpdate(state: GlobalSplitInstallSessionState?) {
-                    if ( mySessionId.indexOf(state!!.sessionId()) != -1) {
+                    if ( mySessionId == state!!.sessionId()) {
                         when (state!!.status()) {
                             GlobalSplitInstallSessionStatus.CANCELED -> {
-                                Toast.makeText(itemView.context, "CANCELED ${nameModule}", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(itemView.context, "CANCELED ${nameModule}", Toast.LENGTH_SHORT).show()
                             }
 
                             GlobalSplitInstallSessionStatus.DOWNLOADING -> {
@@ -98,25 +110,72 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
                             GlobalSplitInstallSessionStatus.INSTALLING -> {
                                 map.size = map.size + state.totalBytesToDownload().toFloat()
-                                Toast.makeText(itemView.context, "INSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(itemView.context, "INSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
                             }
 
                             GlobalSplitInstallSessionStatus.INSTALLED -> {
-                                Toast.makeText(itemView.context, "INSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
 
                                 update(map = map, binding)
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    val builder =
+                                        NotificationCompat.Builder(this@ViewHolder.itemView.context, CHANNEL_ID)
+                                            .setContentTitle("Загрузка карты")
+                                            .setContentText("Карта ${nameModule} загружена и установлена")
+                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                    with(NotificationManagerCompat.from(this@ViewHolder.itemView.context)) {
+                                        // notificationId is a unique int for each notification that you must define.
+                                        if (ActivityCompat.checkSelfPermission(
+                                                this@ViewHolder.itemView.context,
+                                                Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            Toast.makeText(itemView.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
+
+                                            return
+                                        }
+
+                                        notify(mySessionId, builder.build())
+                                    }
+                                }else{
+                                    Toast.makeText(itemView.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
+                                }
 
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLED -> {
-                                Toast.makeText(itemView.context, "UNINSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(itemView.context, "UNINSTALLED ${nameModule}", Toast.LENGTH_SHORT).show()
                                 map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
                                 update(map = map, binding)
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    val builder =
+                                        NotificationCompat.Builder(this@ViewHolder.itemView.context, CHANNEL_ID)
+                                            .setContentTitle("Загрузка карты")
+                                            .setContentText("Карта ${nameModule} удалена")
+                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                    with(NotificationManagerCompat.from(this@ViewHolder.itemView.context)) {
+                                        // notificationId is a unique int for each notification that you must define.
+                                        if (ActivityCompat.checkSelfPermission(
+                                                this@ViewHolder.itemView.context,
+                                                Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            Toast.makeText(itemView.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
+
+                                            return
+                                        }
+
+                                        notify(mySessionId, builder.build())
+                                    }
+                                }else{
+                                    Toast.makeText(itemView.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
+                                }
                             }
 
                             GlobalSplitInstallSessionStatus.UNINSTALLING -> {
-                                Toast.makeText(itemView.context, "UNINSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(itemView.context, "UNINSTALLING ${nameModule}", Toast.LENGTH_SHORT).show()
                             }
 
                             GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
@@ -222,12 +281,12 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
         fun addItem(session: Int){
             synchronized(obj){
-                mySessionId.add(session)
+                mySessionId = session
             }
         }
         fun clearItem(){
             synchronized(obj){
-                mySessionId.clear()
+                mySessionId = 0
                 nameModule = ""
             }
         }
