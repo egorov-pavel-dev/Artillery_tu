@@ -2,48 +2,51 @@ package com.egorovfond.artillery.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityEnemyBinding
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.TargetResultRvAdapter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_enemy.*
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_h
 
 class EnemyActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
     private val adapter by lazy { TargetResultRvAdapter() }
+    private lateinit var binding: ActivityEnemyBinding
+
 
     private val observerUpdate = Observer<Boolean> {
         updateList()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_enemy)
+        //setContentView(R.layout.activity_enemy)
+        binding = ActivityEnemyBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        btn_map_target.setOnClickListener {
+
+        binding.btnMapTarget.setOnClickListener {
             presenter.map_settings = 3
 
             val intent = Intent(this, MapFragment::class.java)
             startActivity(intent)
         }
 
-        enemy_target_rv.layoutManager = LinearLayoutManager(this)
-        enemy_target_rv.adapter = adapter
-        enemy_target_rv.setHasFixedSize(true)
+        binding.enemyTargetRv.layoutManager = LinearLayoutManager(this)
+        binding.enemyTargetRv.adapter = adapter
+        binding.enemyTargetRv.setHasFixedSize(true)
 
-        ed_enemy_name.addTextChangedListener(object : TextWatcher {
+        binding.edEnemyName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -56,13 +59,13 @@ class EnemyActivity : AppCompatActivity() {
 
         })
 
-        checkBox_enemy.setOnClickListener {
-            presenter.getTargetList()[presenter.currentEnemy.position].k_use = checkBox_enemy.isChecked
+        binding.checkBoxEnemy.setOnClickListener {
+            presenter.getTargetList()[presenter.currentEnemy.position].k_use = binding.checkBoxEnemy.isChecked
 
             updateList()
         }
 
-        ed_x_target.addTextChangedListener(object : TextWatcher {
+        binding.edXTarget.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -74,7 +77,7 @@ class EnemyActivity : AppCompatActivity() {
                 else presenter.getTargetList()[presenter.currentEnemy.position].x = p0.toString().toFloat()
             }
         })
-        ed_y_target.addTextChangedListener(object : TextWatcher {
+        binding.edYTarget.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -86,7 +89,7 @@ class EnemyActivity : AppCompatActivity() {
                 else presenter.getTargetList()[presenter.currentEnemy.position].y = p0.toString().toFloat()
             }
         })
-        ed_ht.addTextChangedListener(object : TextWatcher {
+        binding.edHt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -98,7 +101,7 @@ class EnemyActivity : AppCompatActivity() {
                 else  presenter.getTargetList()[presenter.currentEnemy.position].h = p0.toString().toInt()
             }
         })
-        kor_left_metr.addTextChangedListener(object : TextWatcher {
+        binding.korLeftMetr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -110,7 +113,7 @@ class EnemyActivity : AppCompatActivity() {
                 else  presenter.getTargetList()[presenter.currentEnemy.position].k_left = p0.toString().toInt()
             }
         })
-        kor_right_metr.addTextChangedListener(object : TextWatcher {
+        binding.korRightMetr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -122,7 +125,7 @@ class EnemyActivity : AppCompatActivity() {
                 else presenter.getTargetList()[presenter.currentEnemy.position].k_right = p0.toString().toInt()
             }
         })
-        kor_closer_metr.addTextChangedListener(object : TextWatcher {
+        binding.korCloserMetr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -134,7 +137,7 @@ class EnemyActivity : AppCompatActivity() {
                 else presenter.getTargetList()[presenter.currentEnemy.position].k_down = p0.toString().toInt()
             }
         })
-        kor_farther_metr.addTextChangedListener(object : TextWatcher {
+        binding.korFartherMetr.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -147,13 +150,13 @@ class EnemyActivity : AppCompatActivity() {
             }
         })
 
-        btn_map_target_prilet.setOnClickListener {
+        binding.btnMapTargetPrilet.setOnClickListener {
             presenter.map_settings = 4
 
             val intent = Intent(this, MapFragment::class.java)
             startActivity(intent)
         }
-        btn_map_ed_height.setOnClickListener{
+        binding.btnMapEdHeight.setOnClickListener{
             Toast.makeText(this@EnemyActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
                 val image = ImageView(this)
@@ -173,7 +176,7 @@ class EnemyActivity : AppCompatActivity() {
                                 ).toInt()
 
                                 Toast.makeText(this@EnemyActivity, "Высота цели: ${presenter.getTargetList()[presenter.currentEnemy.position].h}", Toast.LENGTH_LONG).show()
-                                ed_ht.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
+                                binding.edHt.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
                             }
                         }
 
@@ -209,23 +212,23 @@ class EnemyActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun updateList() {
-        ed_enemy_name.setText(presenter.getTargetList()[presenter.currentEnemy.position].nameTarget)
-        ed_x_target.setText(presenter.getTargetList()[presenter.currentEnemy.position].x.toString())
-        ed_y_target.setText(presenter.getTargetList()[presenter.currentEnemy.position].y.toString())
-        ed_ht.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
-        kor_left_metr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_left.toString())
-        kor_right_metr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_right.toString())
-        kor_closer_metr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_down.toString())
-        kor_farther_metr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_up.toString())
+        binding.edEnemyName.setText(presenter.getTargetList()[presenter.currentEnemy.position].nameTarget)
+        binding.edXTarget.setText(presenter.getTargetList()[presenter.currentEnemy.position].x.toString())
+        binding.edYTarget.setText(presenter.getTargetList()[presenter.currentEnemy.position].y.toString())
+        binding.edHt.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
+        binding.korLeftMetr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_left.toString())
+        binding.korRightMetr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_right.toString())
+        binding.korCloserMetr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_down.toString())
+        binding.korFartherMetr.setText(presenter.getTargetList()[presenter.currentEnemy.position].k_up.toString())
 
-        checkBox_enemy.isChecked = presenter.getTargetList()[presenter.currentEnemy.position].k_use
+        binding.checkBoxEnemy.isChecked = presenter.getTargetList()[presenter.currentEnemy.position].k_use
 
-        if(checkBox_enemy.isChecked){
-            linearLayout_enemy_kor_leftreight.visibility = View.VISIBLE
-            linearLayout_enemy_kor_updown.visibility = View.VISIBLE
+        if(binding.checkBoxEnemy.isChecked){
+            binding.linearLayoutEnemyKorLeftreight.visibility = View.VISIBLE
+            binding.linearLayoutEnemyKorUpdown.visibility = View.VISIBLE
         }else{
-            linearLayout_enemy_kor_leftreight.visibility = View.GONE
-            linearLayout_enemy_kor_updown.visibility = View.GONE
+            binding.linearLayoutEnemyKorLeftreight.visibility = View.GONE
+            binding.linearLayoutEnemyKorUpdown.visibility = View.GONE
         }
         adapter.notifyDataSetChanged()
     }

@@ -5,35 +5,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.egorovfond.artillery.R
 import com.egorovfond.artillery.database.room.entity.WeaponEntity
+import com.egorovfond.artillery.databinding.CardWeaponListBinding
 import com.egorovfond.artillery.presenter.Presenter
-import kotlinx.android.synthetic.main.card_weapon_list.view.*
 
 class DBWeaponRvAdapter: RecyclerView.Adapter<DBWeaponRvAdapter.ViewHolder>() {
     private val presenter by lazy { Presenter.getPresenter() }
+    private lateinit var binding: CardWeaponListBinding
 
-    class ViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: CardWeaponListBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
 
         private val presenter by lazy { Presenter.getPresenter() }
 
-        fun bind(weapon: WeaponEntity) = with(itemView) {
-            textView_orudie_about.setText("${weapon.name}  mil: ${weapon.mil}")
+        fun bind(weapon: WeaponEntity, binding: CardWeaponListBinding) = with(itemView) {
+            binding.textViewOrudieAbout.setText("${weapon.name}  mil: ${weapon.mil}")
 
-            button_orudie_edit.visibility = View.GONE
+            binding.buttonOrudieEdit.visibility = View.GONE
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        binding = CardWeaponListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_weapon_list, parent, false) as View
+//            LayoutInflater.from(parent.context)
+//                .inflate(R.layout.card_weapon_list, parent, false) as View
+            binding
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(presenter.weaponlist[position])
+        holder.bind(presenter.weaponlist[position], binding)
     }
 
     override fun getItemCount(): Int {

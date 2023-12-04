@@ -40,13 +40,13 @@ class Presenter: ViewModel() {
 
     val maps = mutableListOf(
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
-        Map(name = "zargabad", url = "com.egorovfond.zargabad", size = 0f, isLoaded = false),
+        Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
         Map(name = "chernarus", url = "com.egorovfond.chernarus", size = 0f, isLoaded = false),
-        Map(name = "fallujahint", url = "com.egorovfond.fallujahint", size = 0f, isLoaded = false),
         Map(name = "chongo", url = "com.egorovfond.chongo", size = 0f, isLoaded = false),
         Map(name = "dingor", url = "com.egorovfond.dingor", size = 0f, isLoaded = false),
         Map(name = "eden", url = "com.egorovfond.eden", size = 0f, isLoaded = false),
         Map(name = "enoch", url = "com.egorovfond.enoch", size = 0f, isLoaded = false),
+        Map(name = "fallujahint", url = "com.egorovfond.fallujahint", size = 0f, isLoaded = false),
         Map(name = "kujari", url = "com.egorovfond.kujari", size = 0f, isLoaded = false),
         Map(name = "lythium", url = "com.egorovfond.lythium", size = 0f, isLoaded = false),
         Map(name = "malden", url = "com.egorovfond.malden", size = 0f, isLoaded = false),
@@ -55,6 +55,9 @@ class Presenter: ViewModel() {
         Map(name = "napf", url = "com.egorovfond.napf", size = 0f, isLoaded = false),
         Map(name = "pabst_yellowstone", url = "com.egorovfond.pabst_yellowstone", size = 0f, isLoaded = false),
         Map(name = "panthera3", url = "com.egorovfond.panthera3", size = 0f, isLoaded = false),
+        Map(name = "pecher", url = "com.egorovfond.pecher", size = 0f, isLoaded = false),
+        Map(name = "pja310", url = "com.egorovfond.pja310", size = 0f, isLoaded = false),
+        Map(name = "pja314", url = "com.egorovfond.pja314", size = 0f, isLoaded = false),
         Map(name = "ruha", url = "com.egorovfond.ruha", size = 0f, isLoaded = false),
         Map(name = "sara", url = "com.egorovfond.sara", size = 0f, isLoaded = false),
         Map(name = "sara_dbe1", url = "com.egorovfond.sara_dbe1", size = 0f, isLoaded = false),
@@ -68,11 +71,8 @@ class Presenter: ViewModel() {
         Map(name = "uzbin", url = "com.egorovfond.uzbin", size = 0f, isLoaded = false),
         Map(name = "vt7", url = "com.egorovfond.vt7", size = 0f, isLoaded = false),
         Map(name = "wl_rosche", url = "com.egorovfond.wl_rosche", size = 0f, isLoaded = false),
-        Map(name = "pja314", url = "com.egorovfond.pja314", size = 0f, isLoaded = false),
-        Map(name = "pecher", url = "com.egorovfond.pecher", size = 0f, isLoaded = false),
-        Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
-        Map(name = "woodland_acr", url = "com.egorovfond.woodland_acr", size = 0f, isLoaded = false)
-
+        Map(name = "woodland_acr", url = "com.egorovfond.woodland_acr", size = 0f, isLoaded = false),
+        Map(name = "zargabad", url = "com.egorovfond.zargabad", size = 0f, isLoaded = false)
     )
 
     private val liveDatagetWeaponList: MutableLiveData<MutableList<String>> = MutableLiveData()
@@ -594,6 +594,72 @@ class Presenter: ViewModel() {
             heightMap.mapWigth = 15360
             heightMap.mapHeight = 15360
             heightMap.part = 3840
+        }
+        if (map.equals("chernarus")){
+            heightMap.maxHeight = 550f
+            heightMap.mapWigth = 15360
+            heightMap.mapHeight = 15360
+            heightMap.part = 3840
+        }
+        if (map.equals("brf_sumava")){
+            heightMap.maxHeight = 251f
+            heightMap.mapWigth = 12288
+            heightMap.mapHeight = 12288
+            heightMap.part = 3072
+        }
+        if (map.equals("enoch")){
+            heightMap.maxHeight = 442f
+            heightMap.mapWigth = 12800
+            heightMap.mapHeight = 12800
+            heightMap.part = 3200
+        }
+        if (map.equals("kujari")){
+            heightMap.maxHeight = 61f
+            heightMap.mapWigth = 16384
+            heightMap.mapHeight = 16384
+            heightMap.part = 2048
+        }
+        if (map.equals("malden")){
+            heightMap.maxHeight = 523f
+            heightMap.mapWigth = 12800
+            heightMap.mapHeight = 12800
+            heightMap.part = 3200
+        }
+        if (map.equals("tanoa")){
+            heightMap.maxHeight = 442f
+            heightMap.mapWigth = 15360
+            heightMap.mapHeight = 15360
+            heightMap.part = 3840
+        }
+        if (map.equals("zargabad")){
+            heightMap.maxHeight = 418f
+            heightMap.mapWigth = 8192
+            heightMap.mapHeight = 8192
+            heightMap.part = 2048
+        }
+        if (map.equals("napf")){
+            heightMap.maxHeight = 515f
+            heightMap.mapWigth = 20480
+            heightMap.mapHeight = 20480
+            heightMap.part = 2048
+        }
+        if (map.equals("pja310")){
+            heightMap.maxHeight = 269f
+            heightMap.mapWigth = 20480
+            heightMap.mapHeight = 20480
+            heightMap.part = 2048
+        }
+        if (map.equals("pecher")){
+            heightMap.maxHeight = 418f
+            heightMap.mapWigth = 8192
+            heightMap.mapHeight = 8192
+            heightMap.part = 2048
+        }
+        if (map.equals("vt7")){
+            heightMap.maxHeight = 64f
+            heightMap.mapWigth = 18001
+            heightMap.mapHeight = 18001
+            heightMap.part = 3600
         }
     }
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {

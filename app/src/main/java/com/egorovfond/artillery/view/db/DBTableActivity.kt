@@ -1,17 +1,19 @@
 package com.egorovfond.artillery.view.db
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityDbtableBinding
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.DBTableRvAdapter
-import kotlinx.android.synthetic.main.activity_dbtable.*
 
 class DBTableActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDbtableBinding
+
     private val presenter by lazy { Presenter.getPresenter() }
     private val weapon = mutableListOf<String>()
     private val bullet = mutableListOf<String>()
@@ -31,7 +33,7 @@ class DBTableActivity : AppCompatActivity() {
         weaponAdapter.addAll(it)
         weaponAdapter.notifyDataSetChanged()
 
-        dbtable_weapon?.setAdapter(weaponAdapter)
+        binding.dbtableWeapon.setAdapter(weaponAdapter)
 
     }
     private val observergetBulletList = Observer<MutableList<String>> {
@@ -42,7 +44,7 @@ class DBTableActivity : AppCompatActivity() {
         bulletAdapter.addAll(it)
         bulletAdapter.notifyDataSetChanged()
 
-        dbtable_weapon_bullet?.setAdapter(bulletAdapter)
+        binding.dbtableWeaponBullet.setAdapter(bulletAdapter)
 
     }
     private val observergetBaseList = Observer<MutableList<String>> {
@@ -53,7 +55,7 @@ class DBTableActivity : AppCompatActivity() {
         basetAdapter.addAll(it)
         basetAdapter.notifyDataSetChanged()
 
-        dbtable_weapon_base?.setAdapter(basetAdapter)
+        binding.dbtableWeaponBase.setAdapter(basetAdapter)
 
     }
     private val observergetWeaponTable = Observer<MutableList<Table>> {
@@ -62,36 +64,40 @@ class DBTableActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dbtable)
+//        setContentView(R.layout.activity_dbtable)
+        binding = ActivityDbtableBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        dbtable_weapon?.setOnItemClickListener { parent, view, position, id ->
+
+        binding.dbtableWeapon.setOnItemClickListener { parent, view, position, id ->
             run {
                 weaponID = weaponAdapter.getItem(position).toString()
                 presenter.getWeaponTableFromDB(weaponID)
                 presenter.getWeaponBase(weaponID)
             }
         }
-        button_dbtable_reset.setOnClickListener {
+        binding.buttonDbtableReset.setOnClickListener {
             presenter.initWeapon(weaponID)
         }
-        dbtable_weapon_bullet?.setOnItemClickListener { parent, view, position, id ->
+        binding.dbtableWeaponBullet.setOnItemClickListener { parent, view, position, id ->
             run {
                 bulletID = bulletAdapter.getItem(position).toString()
                 presenter.updateTableWeapoon(weaponID = weaponID, baseID = baseID, bulletID = bulletID)
             }
         }
-        dbtable_weapon_base?.setOnItemClickListener { parent, view, position, id ->
+        binding.dbtableWeaponBase.setOnItemClickListener { parent, view, position, id ->
             run {
                 baseID = basetAdapter.getItem(position).toString()
                 presenter.getWeaponBullet(weaponID, baseID)
             }
         }
-        button_dbtable_save.setOnClickListener {
+        binding.buttonDbtableSave.setOnClickListener {
             presenter.saveWeaponTableIntoDB(weaponID)
 
             this.finish()
         }
-        button_dbtable_add.setOnClickListener {
+        binding.buttonDbtableAdd.setOnClickListener {
             presenter.currentTable.add(Table())
 
             updateList()
@@ -135,8 +141,8 @@ class DBTableActivity : AppCompatActivity() {
 
         adapter = DBTableRvAdapter()
 
-        dbtable_rv.layoutManager = LinearLayoutManager(this)
-        dbtable_rv.adapter = adapter
-        dbtable_rv.setHasFixedSize(true)
+        binding.dbtableRv.layoutManager = LinearLayoutManager(this)
+        binding.dbtableRv.adapter = adapter
+        binding.dbtableRv.setHasFixedSize(true)
     }
 }

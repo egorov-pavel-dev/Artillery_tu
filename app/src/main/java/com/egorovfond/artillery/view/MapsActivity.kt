@@ -1,40 +1,27 @@
 package com.egorovfond.artillery.view
 
-import android.app.Activity
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityMapsBinding
 import com.egorovfond.artillery.view.rvAdapter.MapRvAdapter
-import com.github.javiersantos.appupdater.AppUpdaterUtils
-import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
-import com.github.javiersantos.appupdater.enums.AppUpdaterError
-import com.github.javiersantos.appupdater.enums.UpdateFrom
-import com.github.javiersantos.appupdater.objects.Update
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
-import kotlinx.android.synthetic.main.activity_maps.*
-import java.io.File
-
 
 const val INSTALL_REQUEST_CODE = 123
 
 class MapsActivity : AppCompatActivity() {
     private var adapter: MapRvAdapter? = null
+    private lateinit var binding: ActivityMapsBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+        //setContentView(R.layout.activity_maps)
+        binding = ActivityMapsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
     }
 
     override fun onStart() {
@@ -70,8 +57,8 @@ class MapsActivity : AppCompatActivity() {
 
         adapter = MapRvAdapter()
 
-        maps_rv.layoutManager = LinearLayoutManager(this)
-        maps_rv.adapter = adapter
-        maps_rv.setHasFixedSize(true)
+        binding.mapsRv.layoutManager = LinearLayoutManager(this)
+        binding.mapsRv.adapter = adapter
+        binding.mapsRv.setHasFixedSize(true)
     }
 }

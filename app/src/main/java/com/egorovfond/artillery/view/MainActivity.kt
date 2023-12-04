@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
 import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.database.room.database.AppDatabase
+import com.egorovfond.artillery.databinding.ActivityMainBinding
 import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.db.DBSettingsActivity
 import com.egorovfond.artillery.view.rvAdapter.TargetRvAdapter
 import com.google.android.play.core.splitcompat.SplitCompat
-import kotlinx.android.synthetic.main.activity_main.*
 
 const val PREFERENCE_NOT_FIRST_START = "FIRST_START"
 
@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
     private var adapter: TargetRvAdapter? = null
     private val db by lazy { AppDatabase.getAppDataBase(context = this) }
+    private lateinit var binding: ActivityMainBinding
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
@@ -30,7 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         val settings = getSharedPreferences(PREFERENCE_NOT_FIRST_START, Context.MODE_PRIVATE)
         val notFirstStart = settings.getBoolean(PREFERENCE_NOT_FIRST_START, false)
@@ -45,16 +49,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        button_orudie.setOnClickListener {
+        binding.buttonOrudie.setOnClickListener {
             val intent = Intent(this, OrudieActivity::class.java)
             startActivity(intent)
         }
 
-        button_popravki.setOnClickListener {
+        binding.buttonPopravki.setOnClickListener {
             val intent = Intent(this, PopravkiActivity::class.java)
             startActivity(intent)
         }
-        button_add_target.setOnClickListener {
+        binding.buttonAddTarget.setOnClickListener {
             presenter.addTarget()
 
             updateList()
@@ -85,9 +89,9 @@ class MainActivity : AppCompatActivity() {
 
         adapter = TargetRvAdapter()
 
-        target_rv.layoutManager = LinearLayoutManager(this)
-        target_rv.adapter = adapter
-        target_rv.setHasFixedSize(true)
+        binding.targetRv.layoutManager = LinearLayoutManager(this)
+        binding.targetRv.adapter = adapter
+        binding.targetRv.setHasFixedSize(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

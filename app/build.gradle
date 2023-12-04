@@ -2,9 +2,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'kotlin-kapt'
     id 'com.jeppeman.globallydynamic'
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13'
 }
 
 android {
@@ -28,16 +27,20 @@ android {
             keyPassword '72695092'
         }
     }
-    compileSdk 31
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.egorovfond.artillery"
-        minSdk 21
-        targetSdk 31
-        versionCode 4
-        versionName "1.0.7"
+        minSdk 24
+        targetSdk 34
+        versionCode 5
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -53,6 +56,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
     globallyDynamicServers {
         create("studioIntegrated") {
             serverUrl 'http://77.66.177.30:52111'
@@ -62,7 +66,49 @@ android {
         }
     }
     dynamicFeatures = [
-            ':zargabad', ':takistan', ':altis', ':chernarus', ':chongo', ':dingor', ':eden', ':enoch', ':lythium', ':kujari', ':malden', ':mcn_aliabad', ':mountains_acr', ':napf', ':pabst_yellowstone', ':panthera3', ':ruha', ':sara', ':sara_dbe1', ':seangola', ':stratis', ':tanoa', ':taunus', ':tem_suursaariv', ':uzbin', ':vt7', ':wl_rosche', ':woodland_acr', ':pja314', ':lythium_part0', ':lythium_part1', ':lythium_part2', ':pecher', ':pecher_part1', ':altis_part0', ':altis_part1', ':altis_part2', ':brf_sumava', ':fallujahint', ':vt7_part0', ':vt7_part1', ':vt7_part2', ':pja314_part0', ':pja314_part1', ':pja314_part2', ':takistan_part0', ':takistan_part1', ':takistan_part2'
+            ':altis',
+            ':altis_part0',
+            ':altis_part1',
+            ':altis_part2',
+            ':chernarus',
+            ':chongo',
+            ':dingor',
+            ':eden',
+            ':enoch',
+            ':lythium',
+            ':kujari',
+            ':malden',
+            ':mcn_aliabad',
+            ':mountains_acr',
+            ':napf',
+            ':pabst_yellowstone',
+            ':panthera3',
+            ':ruha',
+            ':sara',
+            ':sara_dbe1',
+            ':seangola',
+            ':stratis',
+            ':tanoa',
+            ':taunus',
+            ':tem_anizay',
+            ':tem_suursaariv',
+            ':uzbin',
+            ':vt7',
+            ':vt7_part0',
+            ':vt7_part1',
+            ':vt7_part2',
+            ':wl_rosche',
+            ':woodland_acr',
+            ':pja314',
+            ':pecher',
+            ':brf_sumava',
+            ':fallujahint',
+            ':takistan',
+            ':takistan_part0',
+            ':takistan_part1',
+            ':takistan_part2',
+            ':pja310',
+            ':zargabad'
     ]
 
 }
@@ -104,15 +150,15 @@ task deploy{
 dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.8'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10"
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
@@ -126,14 +172,15 @@ dependencies {
     implementation "com.github.javiersantos:AppUpdater:2.7"
 
 
-    kapt "androidx.room:room-compiler:2.4.1"
-    implementation "androidx.room:room-rxjava3:2.3.0-alpha02"
-    kapt "android.arch.persistence.room:compiler:1.1.1"
-    implementation "androidx.room:room-ktx:2.4.1"
+    ksp "androidx.room:room-compiler:2.6.0"
+    implementation "androidx.room:room-rxjava3:2.6.0"
+    ksp "android.arch.persistence.room:compiler:1.1.1"
+    implementation "androidx.room:room-ktx:2.6.0"
 
     //implementation("com.google.android.play:feature-delivery-ktx:2.0.0")
 
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.annotation:annotation:1.7.0'
 }

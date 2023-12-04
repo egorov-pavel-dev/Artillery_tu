@@ -7,23 +7,18 @@ import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.FragmentMapBinding
 import com.egorovfond.artillery.presenter.Presenter
-import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import kotlinx.android.synthetic.main.fragment_map.*
 import org.json.JSONObject
 
 
 class MapFragment() : AppCompatActivity() {
     private val presenter by lazy { Presenter.getPresenter() }
-    private val local = presenter.localmap
-    private val splitInstallManager by lazy { SplitInstallManagerFactory.create(this) }
-
-    private val TAG = "MapFragment"
     private var typemap = 0
+    private lateinit var binding: FragmentMapBinding
 
     val items = mutableListOf<String>()
 
@@ -31,7 +26,11 @@ class MapFragment() : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_map)
+        //setContentView(R.layout.fragment_map)
+        binding = FragmentMapBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         items.clear()
         for (i in presenter.maps){
             items.add(i.name)
@@ -42,13 +41,13 @@ class MapFragment() : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        btn_map_ok.setOnClickListener {
+        binding.btnMapOk.setOnClickListener {
             presenter.setCoordinate(x / 1000, y / 1000)
 
             this.finish()
         }
 
-        map_edt?.let {
+        binding.mapEdt?.let {
             it.setAdapter(mapAdapter)
             it.setOnItemClickListener { parent, view, position, id ->
                 run {
@@ -91,18 +90,18 @@ class MapFragment() : AppCompatActivity() {
         w_r = presenter.getMaxRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
         w_r_min = presenter.getMinRange(presenter.map_settings == 3 || presenter.map_settings == 4).toFloat()
 
-        val webSetting = webview_map.getSettings()
+        val webSetting = binding.webviewMap.getSettings()
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true)
         webSetting.javaScriptEnabled = true
-        webview_map.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        webview_map.webViewClient = Callback()
-        webview_map.webChromeClient = MyWebChromeClient()
+        binding.webviewMap.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        binding.webviewMap.webViewClient = Callback()
+        binding.webviewMap.webChromeClient = MyWebChromeClient()
 
         updateWebView()
     }
 
     fun updateWebView(){
-        if (presenter.url.isNotEmpty()) webview_map.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
+        if (presenter.url.isNotEmpty()) binding.webviewMap.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
     }
 
     class Callback: WebViewClient(){

@@ -1,10 +1,7 @@
 package com.egorovfond.artillery.view
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,31 +11,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.databinding.ActivityOrudieSettingsBinding
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
-import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_height
-import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_orudie
-import kotlinx.android.synthetic.main.activity_orudie_settings.btn_map_th
-import kotlinx.android.synthetic.main.activity_orudie_settings.ed_x_TH
-import kotlinx.android.synthetic.main.activity_orudie_settings.ed_x_minomet
-import kotlinx.android.synthetic.main.activity_orudie_settings.ed_y_TH
-import kotlinx.android.synthetic.main.activity_orudie_settings.ed_y_minomet
-import kotlinx.android.synthetic.main.activity_orudie_settings.orudie_weapon_base
-import kotlinx.android.synthetic.main.activity_orudie_settings.orudie_weapon_bullet
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_azimut_th
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_h
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_load
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_name
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_save
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_updateTH
-import kotlinx.android.synthetic.main.activity_orudie_settings.weapon_settings_weapon
 
 
 class OrudieSettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityOrudieSettingsBinding
+
     private val presenter by lazy { Presenter.getPresenter() }
     private val weapon = mutableListOf<String>()
     private val bullet = mutableListOf<String>()
@@ -56,7 +38,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
         weaponAdapter.addAll(it)
         weaponAdapter.notifyDataSetChanged()
 
-        weapon_settings_weapon?.setAdapter(weaponAdapter)
+        binding.weaponSettingsWeapon.setAdapter(weaponAdapter)
 
         //updateForm()
     }
@@ -77,7 +59,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
         baseAdapter.addAll(it)
         baseAdapter.notifyDataSetChanged()
 
-        orudie_weapon_base?.setAdapter(baseAdapter)
+        binding.orudieWeaponBase?.setAdapter(baseAdapter)
 
         //updateForm()
     }
@@ -89,7 +71,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
         bulletAdapter.addAll(it)
         bulletAdapter.notifyDataSetChanged()
 
-        orudie_weapon_bullet?.setAdapter(bulletAdapter)
+        binding.orudieWeaponBullet.setAdapter(bulletAdapter)
 
         //updateForm()
     }
@@ -99,45 +81,48 @@ class OrudieSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_orudie_settings)
+        binding = ActivityOrudieSettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        //setContentView(R.layout.activity_orudie_settings)
 
-        btn_map_orudie.setOnClickListener {
+        binding.btnMapOrudie.setOnClickListener {
             presenter.map_settings = 1
 
             val intent = Intent(this, MapFragment::class.java)
             startActivity(intent)
 
         }
-        btn_map_th.setOnClickListener {
+        binding.btnMapTh.setOnClickListener {
             presenter.map_settings = 2
 
             val intent = Intent(this, MapFragment::class.java)
             startActivity(intent)
 
         }
-        weapon_settings_save.setOnClickListener {
+        binding.weaponSettingsSave.setOnClickListener {
             presenter.getCurrentWeapon().weapon_save_x = presenter.getCurrentWeapon().x
             presenter.getCurrentWeapon().weapon_save_y = presenter.getCurrentWeapon().y
             presenter.getCurrentWeapon().weapon_save_azimut = presenter.getCurrentWeapon().azimut_Dot
 
             Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show()
         }
-        weapon_settings_load.setOnClickListener {
+        binding.weaponSettingsLoad.setOnClickListener {
             presenter.getCurrentWeapon().x = presenter.getCurrentWeapon().weapon_save_x
             presenter.getCurrentWeapon().y = presenter.getCurrentWeapon().weapon_save_y
             presenter.getCurrentWeapon().azimut_Dot = presenter.getCurrentWeapon().weapon_save_azimut
 
-            ed_x_minomet.setText(presenter.getCurrentWeapon().x.toString())
-            ed_y_minomet.setText(presenter.getCurrentWeapon().y.toString())
-            weapon_settings_azimut_th.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
+            binding.edXMinomet.setText(presenter.getCurrentWeapon().x.toString())
+            binding.edYMinomet.setText(presenter.getCurrentWeapon().y.toString())
+            binding.weaponSettingsAzimutTh.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
 
         }
         //weapon_settings_save.visibility = View.GONE
 
-        weapon_settings_updateTH.setOnClickListener {
+        binding.weaponSettingsUpdateTH.setOnClickListener {
             updateAzimutTh()
         }
-        weapon_settings_weapon?.setOnItemClickListener { parent, view, position, id ->
+        binding.weaponSettingsWeapon.setOnItemClickListener { parent, view, position, id ->
             run {
                 positionWeapon = position
                 presenter.setWeaponIntoOrudie(weaponAdapter.getItem(position).toString())
@@ -147,7 +132,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
             }
         }
 
-        weapon_settings_name.addTextChangedListener(object : TextWatcher {
+        binding.weaponSettingsName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -159,85 +144,85 @@ class OrudieSettingsActivity : AppCompatActivity() {
             }
         })
 
-        ed_x_minomet.addTextChangedListener(object : TextWatcher {
+        binding.edXMinomet.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                if(ed_x_minomet.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].x = 0f
-                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].x = ed_x_minomet.text.toString().toFloat()
+                if(binding.edXMinomet.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].x = 0f
+                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].x = binding.edXMinomet.text.toString().toFloat()
 
             }
         })
-        ed_y_minomet.addTextChangedListener(object : TextWatcher {
+        binding.edYMinomet.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                    if(ed_y_minomet.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].y = 0f
-                    else  presenter.getWeapon()[presenter.getCurrentWeapon().position].y = ed_y_minomet.text.toString().toFloat()
+                    if(binding.edYMinomet.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].y = 0f
+                    else  presenter.getWeapon()[presenter.getCurrentWeapon().position].y = binding.edYMinomet.text.toString().toFloat()
             }
         })
 
-        ed_x_TH.addTextChangedListener(object : TextWatcher {
+        binding.edXTH.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                    if(ed_x_TH.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].x_Dot = 0f
-                    else  presenter.getWeapon()[presenter.getCurrentWeapon().position].x_Dot = ed_x_TH.text.toString().toFloat()
+                    if(binding.edXTH.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].x_Dot = 0f
+                    else  presenter.getWeapon()[presenter.getCurrentWeapon().position].x_Dot = binding.edXTH.text.toString().toFloat()
             }
         })
-        ed_y_TH.addTextChangedListener(object : TextWatcher {
+        binding.edYTH.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                if(ed_y_TH.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].y_Dot = 0f
-                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].y_Dot = ed_y_TH.text.toString().toFloat()
+                if(binding.edYTH.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].y_Dot = 0f
+                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].y_Dot = binding.edYTH.text.toString().toFloat()
             }
         })
 
-        weapon_settings_h.addTextChangedListener(object : TextWatcher {
+        binding.weaponSettingsH.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                if(weapon_settings_h.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].h = 0
-                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].h = weapon_settings_h.text.toString().toInt()
+                if(binding.weaponSettingsH.text.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].h = 0
+                else  presenter.getWeapon()[presenter.getCurrentWeapon().position].h = binding.weaponSettingsH.text.toString().toInt()
             }
         })
-        weapon_settings_azimut_th.addTextChangedListener(object : TextWatcher {
+        binding.weaponSettingsAzimutTh.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun afterTextChanged(p0: Editable?) {
-                    if(weapon_settings_azimut_th.text.toString().isEmpty())
+                    if(binding.weaponSettingsAzimutTh.text.toString().isEmpty())
                         presenter.setAzimutDot(presenter.getWeapon()[presenter.getCurrentWeapon().position], 0)
                     else
-                        presenter.setAzimutDot(presenter.getWeapon()[presenter.getCurrentWeapon().position], weapon_settings_azimut_th.text.toString().toInt())
+                        presenter.setAzimutDot(presenter.getWeapon()[presenter.getCurrentWeapon().position], binding.weaponSettingsAzimutTh.text.toString().toInt())
             }
         })
 
-        orudie_weapon_bullet?.setOnItemClickListener { parent, view, position, id ->
+        binding.orudieWeaponBullet?.setOnItemClickListener { parent, view, position, id ->
             run {
                 presenter.setBulletIntoOrudie(bulletAdapter.getItem(position).toString())
             }
         }
-        orudie_weapon_base?.setOnItemClickListener { parent, view, position, id ->
+        binding.orudieWeaponBase?.setOnItemClickListener { parent, view, position, id ->
             run {
                 presenter.setBaseIntoOrudie(baseAdapter.getItem(position).toString())
                 presenter.setBulletIntoOrudie("")
             }
         }
 
-        btn_map_height.setOnClickListener {
+        binding.btnMapHeight.setOnClickListener {
             Toast.makeText(this@OrudieSettingsActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
             try {
                 val image = ImageView(this)
@@ -257,7 +242,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
                                 ).toInt()
 
                                 Toast.makeText(this@OrudieSettingsActivity, "Высота орудия: ${presenter.getCurrentWeapon().h}", Toast.LENGTH_LONG).show()
-                                weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
+                                binding.weaponSettingsH.setText(presenter.getCurrentWeapon().h.toString())
                             }
                         }
 
@@ -301,21 +286,21 @@ class OrudieSettingsActivity : AppCompatActivity() {
     }
 
     private fun updateForm() {
-        ed_x_minomet.setText(presenter.getCurrentWeapon().x.toString())
-        ed_y_minomet.setText(presenter.getCurrentWeapon().y.toString())
-        ed_x_TH.setText(presenter.getCurrentWeapon().x_Dot.toString())
-        ed_y_TH.setText(presenter.getCurrentWeapon().y_Dot.toString())
-        weapon_settings_h.setText(presenter.getCurrentWeapon().h.toString())
-        weapon_settings_azimut_th.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
-        weapon_settings_name.setText(presenter.getCurrentWeapon().nameOrudie)
-        weapon_settings_weapon.hint = presenter.getCurrentWeapon().weapon
-        orudie_weapon_bullet.hint = if (presenter.getCurrentWeapon().bullet.isEmpty()) {"Автовыбор"} else presenter.getCurrentWeapon().bullet
-        orudie_weapon_base.hint = if (presenter.getCurrentWeapon().base.isEmpty()) {"не задано"} else presenter.getCurrentWeapon().base
+        binding.edXMinomet.setText(presenter.getCurrentWeapon().x.toString())
+        binding.edYMinomet.setText(presenter.getCurrentWeapon().y.toString())
+        binding.edXTH.setText(presenter.getCurrentWeapon().x_Dot.toString())
+        binding.edYTH.setText(presenter.getCurrentWeapon().y_Dot.toString())
+        binding.weaponSettingsH.setText(presenter.getCurrentWeapon().h.toString())
+        binding.weaponSettingsAzimutTh.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
+        binding.weaponSettingsName.setText(presenter.getCurrentWeapon().nameOrudie)
+        binding.weaponSettingsWeapon.hint = presenter.getCurrentWeapon().weapon
+        binding.orudieWeaponBullet.hint = if (presenter.getCurrentWeapon().bullet.isEmpty()) {"Автовыбор"} else presenter.getCurrentWeapon().bullet
+        binding.orudieWeaponBase.hint = if (presenter.getCurrentWeapon().base.isEmpty()) {"не задано"} else presenter.getCurrentWeapon().base
     }
 
     private fun updateAzimutTh() {
         presenter.updateOrudieByXY(presenter.getWeapon()[presenter.getCurrentWeapon().position])
-        weapon_settings_azimut_th.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
+        binding.weaponSettingsAzimutTh.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
     }
 
 }
