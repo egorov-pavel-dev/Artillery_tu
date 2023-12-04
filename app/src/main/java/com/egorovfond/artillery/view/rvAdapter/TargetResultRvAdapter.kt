@@ -12,13 +12,12 @@ import com.egorovfond.artillery.databinding.CardTargetListResultBinding
 import com.egorovfond.artillery.presenter.Presenter
 
 class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHolder>() {
-    private lateinit var binding: CardTargetListResultBinding
-
     private val presenter by lazy { Presenter.getPresenter() }
 
     class ViewHolder(itemView: CardTargetListResultBinding) :
         RecyclerView.ViewHolder(itemView.root) {
 
+        val binding: CardTargetListResultBinding = itemView
         private val TAG = "TargetResultRvAdapter"
         private val presenter by lazy { Presenter.getPresenter() }
 
@@ -148,12 +147,11 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 //            LayoutInflater.from(parent.context)
 //                .inflate(R.layout.card_target_list_result, parent, false) as View
 //        )
-        binding = CardTargetListResultBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(CardTargetListResultBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: TargetResultRvAdapter.ViewHolder, position: Int) {
-        holder.bind(position, binding)
+        holder.bind(position, holder.binding)
     }
 
     override fun getItemCount(): Int {

@@ -23,19 +23,19 @@ import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
 const val INSTALL_REQUEST_CODE = 123
 class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
-    private lateinit var binding: CardMapListBinding
 
     private val mySessionId = mutableListOf<Int>()
     @Volatile private var obj = Any()
 
-    class ViewHolder(itemView: CardMapListBinding, mySession : MutableList<Int>, obj_:Any) :
-        RecyclerView.ViewHolder(itemView.root) {
+    class ViewHolder(binding_: CardMapListBinding, mySession : MutableList<Int>, obj_:Any) :
+        RecyclerView.ViewHolder(binding_.root) {
+        val binding: CardMapListBinding = binding_
         @Volatile private var nameModule = ""
         @Volatile private var obj = obj_
         private val mySessionId = mySession
 
         private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
-            GlobalSplitInstallManagerFactory.create(itemView.root.context)
+            GlobalSplitInstallManagerFactory.create(binding.root.context)
         }
 
         private lateinit var installUninstallrequest : GlobalSplitInstallTask<Int>
@@ -234,18 +234,18 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MapRvAdapter.ViewHolder {
-        binding = CardMapListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
         return ViewHolder(
 //            itemView = LayoutInflater.from(parent.context)
 //                .inflate(R.layout.card_map_list, parent, false) as View,
-            itemView = binding,
+            binding_ = CardMapListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             mySession = mySessionId,
             obj_ = obj
         )
     }
 
     override fun onBindViewHolder(holder: MapRvAdapter.ViewHolder, position: Int) {
-        holder.bind(presenter.maps[position], binding)
+        holder.bind(presenter.maps[position], holder.binding)
     }
 
     override fun getItemCount(): Int {

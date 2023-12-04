@@ -13,12 +13,11 @@ import com.egorovfond.artillery.view.OrudieSettingsActivity
 class OrudieRvAdapter() : RecyclerView.Adapter<OrudieRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
     private val data = mutableListOf<Orudie>()
-    private lateinit var binding: CardWeaponListBinding
-
 
     class ViewHolder(itemView: CardWeaponListBinding) :
         RecyclerView.ViewHolder(itemView.root) {
 
+        val binding: CardWeaponListBinding = itemView
         private val presenter by lazy { Presenter.getPresenter() }
 
         fun bind(weapon: Orudie, binding: CardWeaponListBinding) = with(itemView) {
@@ -39,12 +38,11 @@ class OrudieRvAdapter() : RecyclerView.Adapter<OrudieRvAdapter.ViewHolder>(){
 //            LayoutInflater.from(parent.context)
 //                .inflate(R.layout.card_weapon_list, parent, false) as View
 //        )
-        binding = CardWeaponListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(CardWeaponListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position], binding)
+        holder.bind(data[position], holder.binding)
     }
 
     override fun getItemCount(): Int {
