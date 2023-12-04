@@ -51,19 +51,6 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 1){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            }
-        }
-    }
     override fun onStart() {
         super.onStart()
 
