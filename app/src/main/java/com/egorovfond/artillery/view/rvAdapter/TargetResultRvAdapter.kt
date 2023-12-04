@@ -35,7 +35,10 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
             }
             binding.btnChangeTHBussol.setOnClickListener {
                 try {
-                    presenter.updateWeaponTH(binding.btnChangeTHBussol.isChecked, presenter.getResultAbout()[position])
+                    if (!binding.checkBoxNotBussol.isChecked){
+                        presenter.getResultAbout()[position].ugol = binding.edBussol.text.toString().toInt()
+                    }
+                    presenter.updateWeaponTH(binding.checkBoxNotBussol.isChecked, presenter.getResultAbout()[position])
                 }catch (e: Throwable){
                     Log.d(TAG, "bind: $e")
                 }
@@ -80,10 +83,10 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 
                 }
                 override fun afterTextChanged(p0: Editable?) {
-                    synchronized(Presenter::class) {
-                        if (p0.toString().isEmpty()) presenter.getResultAbout()[position].ugol = 0
-                        else presenter.getResultAbout()[position].ugol = p0.toString().toInt()
-                    }
+//                    synchronized(Presenter::class) {
+//                        if (p0.toString().isEmpty()) presenter.getResultAbout()[position].ugol = 0
+//                        else presenter.getResultAbout()[position].ugol = p0.toString().toInt()
+//                    }
                 }
             })
             binding.edEnemy.addTextChangedListener(object : TextWatcher {
