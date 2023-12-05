@@ -215,6 +215,9 @@ class Presenter: ViewModel() {
                             }
 
                             GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                                removeMapsLoad(mapName)
+                                sessions.remove(state.sessionId())
+
                                 liveDataUpate.postValue(state)
                             }
                         }
