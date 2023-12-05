@@ -151,30 +151,23 @@ class Presenter: ViewModel() {
 
         fun loadMap(mapName:String){
             var mySessionId = 0
-            val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int> {
-                override fun onSuccess(sessionId: Int) {
+            val onSuccessListener =
+                OnGlobalSplitInstallSuccessListener<Int> { sessionId ->
                     if (sessionId != 0) {
                         addMapsLoad(mapName)
                         sessions.add(sessionId)
                         mySessionId = sessionId
                     }
                 }
-            }
-            val onCompleteListener = object : OnGlobalSplitInstallCompleteListener<Int> {
-                override fun onComplete(task: GlobalSplitInstallTask<Int>?) {
+            val onCompleteListener = OnGlobalSplitInstallCompleteListener<Int> { }
+            val onFailureListener = OnGlobalSplitInstallFailureListener {
+                removeMapsLoad(mapName)
+                sessions.remove(mySessionId)
 
-                }
+                liveDataUpate.postValue(null)
             }
-            val onFailureListener = object : OnGlobalSplitInstallFailureListener {
-                override fun onFailure(e: Exception?) {
-                    removeMapsLoad(mapName)
-                    sessions.remove(mySessionId)
-
-                    liveDataUpate.postValue(null)
-                }
-            }
-            val listener = object : GlobalSplitInstallUpdatedListener {
-                override fun onStateUpdate(state: GlobalSplitInstallSessionState?) {
+            val listener =
+                GlobalSplitInstallUpdatedListener { state ->
                     if (sessions.find { it == state!!.sessionId() } != null) {
                         when (state!!.status()) {
                             GlobalSplitInstallSessionStatus.CANCELED -> {
@@ -227,7 +220,6 @@ class Presenter: ViewModel() {
                         }
                     }
                 }
-            }
 
             globalSplitInstallManager?.let {
                 it.registerListener(listener)
@@ -502,11 +494,6 @@ class Presenter: ViewModel() {
             )
         }
     }
-    fun updateTargetByXY(target: Enemy){
-        for (result_ in target.result) {
-            updateResult(result_, target)
-        }
-    }
 
     private fun updateResult(
         result_: Result,
@@ -573,28 +560,6 @@ class Presenter: ViewModel() {
     fun getMinRange(isEnemy: Boolean): Int{
         if (isEnemy) return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, getCurrentWeapon().mortir)
         return Artilery.getMinRange(currentTable, getCurrentWeapon().bullet, null)
-    }
-
-    fun updateTHAndXY(result: Result, Xtarget: Float, Ytarget: Float) {
-        synchronized(Presenter::class) {
-
-            result.orudie.x = Azimut.getXCoordinat(
-                Xtarget,
-                result.distace,
-                Azimut.getMirrorUgol(result.azimut_target, result.orudie.mil),
-                result.orudie.mil
-            )
-            result.orudie.y = Azimut.getYCoordinat(
-                Ytarget,
-                result.distace,
-                Azimut.getMirrorUgol(result.azimut_target, result.orudie.mil),
-                result.orudie.mil
-            )
-        }
-    }
-
-    fun saveOrudie() {
-        //updateTargetList()
     }
 
     private fun addUpdateResultByWeapon(weapon: Orudie) {
@@ -853,14 +818,14 @@ class Presenter: ViewModel() {
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {
         val mapHeight = heightMap
 
-        val part = (Math.round((x_ * 1000)) / mapHeight.part).toInt()
+        val part = (Math.round((x_ * 1000)) / mapHeight.part)
 
 
         // get one pixel color
         val x = Math.round((x_ * 1000)) - (part * mapHeight.part)
         val y = Math.round((y_ * 1000))
 
-        val pixel = bmpOriginal.getPixel(x.toInt(),y.toInt())
+        val pixel = bmpOriginal.getPixel(x,y)
         val red = Color.red(pixel)
 
         var h = Math.round((red.toFloat() / 255) * (heightMap.maxHeight - heightMap.minHeight))
