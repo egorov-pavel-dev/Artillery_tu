@@ -90,9 +90,33 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
             }
             val onFailureListener = object : OnGlobalSplitInstallFailureListener{
                 override fun onFailure(e: Exception?) {
-                    Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
                     map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
                     update(map = map, binding)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val builder =
+                            NotificationCompat.Builder(this@ViewHolder.binding.root.context, CHANNEL_ID)
+                                .setContentTitle("Загрузка карты")
+                                .setContentText("Карта ${nameModule} удалена")
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        with(NotificationManagerCompat.from(this@ViewHolder.itemView.context)) {
+                            // notificationId is a unique int for each notification that you must define.
+                            if (ActivityCompat.checkSelfPermission(
+                                    this@ViewHolder.itemView.context,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
+
+                                return
+                            }
+
+                            notify(mySessionId, builder.build())
+                        }
+                    }else{
+                        Toast.makeText(itemView.context, "¡FAILURE! ${e!!.message.toString()}", Toast.LENGTH_LONG).show()
+                    }
                 }
 
             }
@@ -120,7 +144,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     val builder =
-                                        NotificationCompat.Builder(this@ViewHolder.itemView.context, CHANNEL_ID)
+                                        NotificationCompat.Builder(this@ViewHolder.binding.root.context, CHANNEL_ID)
                                             .setContentTitle("Загрузка карты")
                                             .setContentText("Карта ${nameModule} загружена и установлена")
                                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -131,7 +155,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                                 Manifest.permission.POST_NOTIFICATIONS
                                             ) != PackageManager.PERMISSION_GRANTED
                                         ) {
-                                            Toast.makeText(itemView.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(this@ViewHolder.binding.root.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
 
                                             return
                                         }
@@ -139,7 +163,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                         notify(mySessionId, builder.build())
                                     }
                                 }else{
-                                    Toast.makeText(itemView.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@ViewHolder.binding.root.context, "Карта ${nameModule} загружена и установлена", Toast.LENGTH_SHORT).show()
                                 }
 
                             }
@@ -151,7 +175,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     val builder =
-                                        NotificationCompat.Builder(this@ViewHolder.itemView.context, CHANNEL_ID)
+                                        NotificationCompat.Builder(this@ViewHolder.binding.root.context, CHANNEL_ID)
                                             .setContentTitle("Загрузка карты")
                                             .setContentText("Карта ${nameModule} удалена")
                                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -162,7 +186,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                                 Manifest.permission.POST_NOTIFICATIONS
                                             ) != PackageManager.PERMISSION_GRANTED
                                         ) {
-                                            Toast.makeText(itemView.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(this@ViewHolder.binding.root.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
 
                                             return
                                         }
@@ -170,7 +194,7 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
                                         notify(mySessionId, builder.build())
                                     }
                                 }else{
-                                    Toast.makeText(itemView.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@ViewHolder.binding.root.context, "Карта ${nameModule} удалена", Toast.LENGTH_SHORT).show()
                                 }
                             }
 
