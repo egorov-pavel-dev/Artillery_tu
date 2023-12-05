@@ -87,7 +87,7 @@ class MapsActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
 
-        adapter = MapRvAdapter()
+        adapter = MapRvAdapter(globalSplitInstallManager)
 
         binding.mapsRv.layoutManager = LinearLayoutManager(this)
         binding.mapsRv.adapter = adapter
