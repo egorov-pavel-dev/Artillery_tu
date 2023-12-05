@@ -15,6 +15,8 @@ import com.egorovfond.artillery.R
 import com.egorovfond.artillery.databinding.ActivityMapsBinding
 import com.egorovfond.artillery.view.rvAdapter.MapRvAdapter
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 
 const val INSTALL_REQUEST_CODE = 123
 const val CHANNEL_ID = "Artillery"
@@ -22,6 +24,9 @@ const val CHANNEL_ID = "Artillery"
 class MapsActivity : AppCompatActivity() {
     private var adapter: MapRvAdapter? = null
     private lateinit var binding: ActivityMapsBinding
+    private val globalSplitInstallManager: GlobalSplitInstallManager by lazy {
+        GlobalSplitInstallManagerFactory.create(this)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

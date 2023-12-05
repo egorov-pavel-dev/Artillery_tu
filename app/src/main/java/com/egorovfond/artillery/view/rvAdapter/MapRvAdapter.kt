@@ -33,22 +33,19 @@ import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
 
 const val INSTALL_REQUEST_CODE = 123
 
-class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
+class MapRvAdapter(splitInstallManager: GlobalSplitInstallManager): RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
     private val presenter by lazy { Presenter.getPresenter() }
-
+    private val globalSplitInstallManager = splitInstallManager
     private val mySessionId = 0
     @Volatile private var obj = Any()
 
-    class ViewHolder(binding_: CardMapListBinding, mySession : Int, obj_:Any) :
+    class ViewHolder(binding_: CardMapListBinding, mySession : Int, obj_:Any, splitInstallManager : GlobalSplitInstallManager) :
         RecyclerView.ViewHolder(binding_.root) {
         val binding: CardMapListBinding = binding_
+        val globalSplitInstallManager = splitInstallManager
         @Volatile private var nameModule = ""
         @Volatile private var obj = obj_
         private var mySessionId = mySession
-
-        private val  globalSplitInstallManager: GlobalSplitInstallManager by lazy {
-            GlobalSplitInstallManagerFactory.create(binding.root.context)
-        }
 
         private lateinit var installUninstallrequest : GlobalSplitInstallTask<Int>
 
@@ -323,7 +320,8 @@ class MapRvAdapter: RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 //                .inflate(R.layout.card_map_list, parent, false) as View,
             binding_ = CardMapListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             mySession = mySessionId,
-            obj_ = obj
+            obj_ = obj,
+            splitInstallManager = globalSplitInstallManager
         )
     }
 
