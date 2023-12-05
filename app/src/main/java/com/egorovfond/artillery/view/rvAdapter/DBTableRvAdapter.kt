@@ -11,11 +11,11 @@ import com.egorovfond.artillery.presenter.Presenter
 
 class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
     private val presenter by lazy { Presenter.getPresenter() }
-    private lateinit var binding: CardDbtableBinding
 
     class ViewHolder(itemView: CardDbtableBinding) :
         RecyclerView.ViewHolder(itemView.root) {
 
+        val binding: CardDbtableBinding = itemView
         private val presenter by lazy { Presenter.getPresenter() }
 
         fun bind(position: Int, binding: CardDbtableBinding) = with(itemView) {
@@ -175,16 +175,15 @@ class DBTableRvAdapter: RecyclerView.Adapter<DBTableRvAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DBTableRvAdapter.ViewHolder {
-        binding = CardDbtableBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DBTableRvAdapter.ViewHolder(
-            binding
+            CardDbtableBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 //            LayoutInflater.from(parent.context)
 //                .inflate(R.layout.card_dbtable, parent, false) as View
         )
     }
 
     override fun onBindViewHolder(holder: DBTableRvAdapter.ViewHolder, position: Int) {
-        holder.bind(position, binding)
+        holder.bind(position, holder.binding)
     }
 
     override fun getItemCount(): Int {
