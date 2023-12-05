@@ -18,7 +18,6 @@ import com.egorovfond.artillery.math.Artilery
 import com.egorovfond.artillery.math.Azimut
 import com.egorovfond.artillery.math.Map
 import com.egorovfond.artillery.math.Table
-import com.egorovfond.artillery.view.INSTALL_REQUEST_CODE
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
 import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallRequest
