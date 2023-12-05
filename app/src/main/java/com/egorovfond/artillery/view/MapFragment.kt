@@ -119,13 +119,21 @@ class MapFragment() : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            view?.loadUrl(request?.url.toString())
+            try {
+                view?.loadUrl(request?.url.toString())
+            } catch (e: Exception){
+                //Toast.makeText(, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
+            }
             return true
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             url?.let {
-                view?.loadUrl(it)
+                try {
+                    view?.loadUrl(it)
+                }  catch (e: Exception){
+                    //Toast.makeText(this, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
+                }
             }
             return true
         }
