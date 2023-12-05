@@ -313,11 +313,6 @@ class Presenter: ViewModel() {
                 mapsLoad.remove(item)
             }
         }
-        fun clearMapsLoad(){
-            synchronized(Presenter::class) {
-                mapsLoad.clear()
-            }
-        }
     }
 
     init {

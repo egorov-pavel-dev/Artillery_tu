@@ -48,9 +48,9 @@ class MapFragment() : AppCompatActivity() {
             this.finish()
         }
 
-        binding.mapEdt?.let {
+        binding.mapEdt.let {
             it.setAdapter(mapAdapter)
-            it.setOnItemClickListener { parent, view, position, id ->
+            it.setOnItemClickListener { _, _, position, _ ->
                 run {
                     presenter.url = mapAdapter.getItem(position).toString()
                     presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
