@@ -1,25 +1,34 @@
 package com.egorovfond.artillery.presenter
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.egorovfond.artillery.R
 import com.egorovfond.artillery.data.Enemy
 import com.egorovfond.artillery.data.Orudie
 import com.egorovfond.artillery.data.Popravki
 import com.egorovfond.artillery.data.Result
-import com.egorovfond.artillery.data.heightMap.HeightMap
 import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.database.DB
 import com.egorovfond.artillery.database.room.entity.WeaponEntity
 import com.egorovfond.artillery.math.Artilery
 import com.egorovfond.artillery.math.Azimut
-import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.math.Map
-import kotlin.math.round
+import com.egorovfond.artillery.math.Table
+import com.egorovfond.artillery.view.INSTALL_REQUEST_CODE
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallRequest
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionState
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionStatus
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallUpdatedListener
+import com.jeppeman.globallydynamic.tasks.GlobalSplitInstallTask
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallCompleteListener
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallFailureListener
+import com.jeppeman.globallydynamic.tasks.OnGlobalSplitInstallSuccessListener
 
 const val BULLET_NOTHING = "Не выбран"
 
@@ -114,6 +123,12 @@ class Presenter: ViewModel() {
     }
     companion object {
         private var presenter: Presenter? = null
+        @Volatile private var globalSplitInstallManager: GlobalSplitInstallManager? = null
+        private val mapsLoad = mutableListOf<String>()
+        private val sessions = mutableListOf<Int>()
+        private val liveDataUpate: MutableLiveData<GlobalSplitInstallSessionState?> = MutableLiveData()
+
+        fun subscribeServer(): MutableLiveData<GlobalSplitInstallSessionState?> = liveDataUpate
 
         fun getPresenter(): Presenter {
             if (presenter == null){
@@ -123,6 +138,185 @@ class Presenter: ViewModel() {
             }
 
             return this.presenter!!
+        }
+
+        fun getSplitInstallManager(context: Context): GlobalSplitInstallManager{
+            if (globalSplitInstallManager == null){
+                synchronized(Presenter::class) {
+                    globalSplitInstallManager = GlobalSplitInstallManagerFactory.create(context)
+                }
+            }
+
+            return this.globalSplitInstallManager!!
+        }
+
+        fun loadMap(mapName:String){
+            var mySessionId = 0
+            val onSuccessListener = object : OnGlobalSplitInstallSuccessListener<Int> {
+                override fun onSuccess(sessionId: Int) {
+                    if (sessionId != 0) {
+                        addMapsLoad(mapName)
+                        sessions.add(sessionId)
+                        mySessionId = sessionId
+                    }
+                }
+            }
+            val onCompleteListener = object : OnGlobalSplitInstallCompleteListener<Int> {
+                override fun onComplete(task: GlobalSplitInstallTask<Int>?) {
+
+                }
+            }
+            val onFailureListener = object : OnGlobalSplitInstallFailureListener {
+                override fun onFailure(e: Exception?) {
+                    removeMapsLoad(mapName)
+                    sessions.remove(mySessionId)
+
+                    liveDataUpate.postValue(null)
+                }
+            }
+            val listener = object : GlobalSplitInstallUpdatedListener {
+                override fun onStateUpdate(state: GlobalSplitInstallSessionState?) {
+                    if (sessions.find { it == state!!.sessionId() } != null) {
+                        when (state!!.status()) {
+                            GlobalSplitInstallSessionStatus.CANCELED -> {
+                                removeMapsLoad(mapName)
+                                sessions.remove(state.sessionId())
+
+                                liveDataUpate.postValue(state)
+                            }
+
+                            GlobalSplitInstallSessionStatus.DOWNLOADING -> {
+                            }
+
+                            GlobalSplitInstallSessionStatus.INSTALLING -> {
+                                getPresenter().maps.find { it.name == mapName }?.let {
+                                    it.size = state.totalBytesToDownload().toFloat()
+                                }
+                            }
+
+                            GlobalSplitInstallSessionStatus.INSTALLED -> {
+                                getPresenter().maps.find { it.name == mapName }?.let { map ->
+                                    globalSplitInstallManager?.let {
+                                        map.isLoaded = it.installedModules.contains(mapName)
+                                    }
+                                }
+                                removeMapsLoad(mapName)
+                                sessions.remove(state.sessionId())
+
+                                liveDataUpate.postValue(state)
+                            }
+
+                            GlobalSplitInstallSessionStatus.UNINSTALLED -> {
+                                getPresenter().maps.find { it.name == mapName }?.let { map ->
+                                    globalSplitInstallManager?.let {
+                                        map.isLoaded = it.installedModules.contains(mapName)
+                                    }
+                                }
+                                removeMapsLoad(mapName)
+                                sessions.remove(state.sessionId())
+
+                                liveDataUpate.postValue(state)
+                            }
+
+                            GlobalSplitInstallSessionStatus.UNINSTALLING -> {
+
+                            }
+
+                            GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                                liveDataUpate.postValue(state)
+                            }
+                        }
+                    }
+                }
+            }
+
+            globalSplitInstallManager?.let {
+                it.registerListener(listener)
+
+                val installUninstallrequest =
+                    if (it.installedModules.contains(mapName)) {
+                        val modules =
+                            mutableListOf(mapName)
+                        if (mapName.equals("altis")) {
+                            if (it.installedModules.contains("altis_part0")){
+                                modules.add("altis_part0")
+                            }
+                            if (it.installedModules.contains("altis_part1")){
+                                modules.add("altis_part1")
+                            }
+                            if (it.installedModules.contains("altis_part2")){
+                                modules.add("altis_part2")
+                            }
+                        } else if (mapName.equals("vt7")) {
+                            if (it.installedModules.contains("vt7_part0")){
+                                modules.add("vt7_part0")
+                            }
+                            if (it.installedModules.contains("vt7_part1")){
+                                modules.add("vt7_part1")
+                            }
+                            if (it.installedModules.contains("vt7_part2")){
+                                modules.add("vt7_part2")
+                            }
+                        } else if (mapName.equals("takistan")) {
+                            if (it.installedModules.contains("takistan_part0")){
+                                modules.add("takistan_part0")
+                            }
+                            if (it.installedModules.contains("takistan_part1")){
+                                modules.add("takistan_part1")
+                            }
+                            if (it.installedModules.contains("takistan_part2")){
+                                modules.add("takistan_part2")
+                            }
+                        }
+
+                        it.startUninstall(modules)
+                    } else {
+                        val request_par = GlobalSplitInstallRequest.newBuilder()
+                            .addModule(mapName)
+                        if (mapName.equals("altis")) {
+                            request_par.addModule("altis_part0")
+                            request_par.addModule("altis_part1")
+                            request_par.addModule("altis_part2")
+                        } else if (mapName.equals("vt7")) {
+                            request_par.addModule("vt7_part0")
+                            request_par.addModule("vt7_part1")
+                            request_par.addModule("vt7_part2")
+                        } else if (mapName.equals("takistan")) {
+                            request_par.addModule("takistan_part0")
+                            request_par.addModule("takistan_part1")
+                            request_par.addModule("takistan_part2")
+                        }
+
+                        //request_par.addModule("${nameModule}_heightmap")
+
+                        val request = request_par.build()
+                        it.startInstall(request)
+                    }
+
+                installUninstallrequest.addOnSuccessListener(onSuccessListener)
+                installUninstallrequest.addOnCompleteListener(onCompleteListener)
+                installUninstallrequest.addOnFailureListener(onFailureListener)
+            }
+        }
+        fun getMapsLoad(): MutableList<String>{
+            return mapsLoad
+        }
+
+        fun addMapsLoad(item: String){
+            synchronized(Presenter::class) {
+                mapsLoad.add(item)
+            }
+        }
+
+        fun removeMapsLoad(item: String){
+            synchronized(Presenter::class) {
+                mapsLoad.remove(item)
+            }
+        }
+        fun clearMapsLoad(){
+            synchronized(Presenter::class) {
+                mapsLoad.clear()
+            }
         }
     }
 
