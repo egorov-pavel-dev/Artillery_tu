@@ -159,7 +159,7 @@ class Presenter: ViewModel() {
                     if (sessions.find { it == state!!.sessionId() } != null) {
                         when (state!!.status()) {
                             GlobalSplitInstallSessionStatus.CANCELED -> {
-                                removeMapsLoad(mapName)
+                                removeMapsLoad()
                                 sessions.clear()
 
                                 liveDataUpate.postValue(state)
@@ -180,7 +180,7 @@ class Presenter: ViewModel() {
                                         map.isLoaded = it.installedModules.contains(mapName)
                                     }
                                 }
-                                removeMapsLoad(mapName)
+                                removeMapsLoad()
                                 sessions.clear()
 
                                 liveDataUpate.postValue(state)
@@ -192,7 +192,7 @@ class Presenter: ViewModel() {
                                         map.isLoaded = it.installedModules.contains(mapName)
                                     }
                                 }
-                                removeMapsLoad(mapName)
+                                removeMapsLoad()
                                 sessions.clear()
 
                                 liveDataUpate.postValue(state)
@@ -203,7 +203,7 @@ class Presenter: ViewModel() {
                             }
 
                             GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                                removeMapsLoad(mapName)
+                                removeMapsLoad()
                                 sessions.clear()
 
                                 liveDataUpate.postValue(state)
@@ -213,7 +213,7 @@ class Presenter: ViewModel() {
                 }
             val onCompleteListener = OnGlobalSplitInstallCompleteListener<Int> { }
             val onFailureListener = OnGlobalSplitInstallFailureListener {
-                removeMapsLoad(mapName)
+                removeMapsLoad()
                 sessions.remove(mySessionId)
 
                 globalSplitInstallManager?.unregisterListener(listener)
@@ -305,7 +305,7 @@ class Presenter: ViewModel() {
             }
         }
 
-        fun removeMapsLoad(item: String){
+        fun removeMapsLoad(){
             synchronized(Presenter::class) {
                 //mapsLoad.remove(item)
                 mapsLoad.clear()
