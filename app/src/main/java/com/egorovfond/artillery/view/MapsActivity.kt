@@ -8,15 +8,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egorovfond.artillery.R
 import com.egorovfond.artillery.databinding.ActivityMapsBinding
+import com.egorovfond.artillery.presenter.Presenter
 import com.egorovfond.artillery.view.rvAdapter.MapRvAdapter
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallConfirmResult
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManager
-import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallManagerFactory
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionState
+import com.jeppeman.globallydynamic.globalsplitinstall.GlobalSplitInstallSessionStatus
 
 const val INSTALL_REQUEST_CODE = 123
 const val CHANNEL_ID = "Artillery"
@@ -24,14 +26,51 @@ const val CHANNEL_ID = "Artillery"
 class MapsActivity : AppCompatActivity() {
     private var adapter: MapRvAdapter? = null
     private lateinit var binding: ActivityMapsBinding
-    private val globalSplitInstallManager: GlobalSplitInstallManager by lazy {
-        GlobalSplitInstallManagerFactory.create(this)
-    }
 
+    private val observerUpdate = Observer<GlobalSplitInstallSessionState?> {state->
+        if (state == null){
+            Toast.makeText(this, "Ошибка при подключении к серверу", Toast.LENGTH_LONG).show()
+        } else {
+            when (state.status()) {
+                GlobalSplitInstallSessionStatus.CANCELED -> {
+                    Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show()
+                }
+
+                GlobalSplitInstallSessionStatus.DOWNLOADING -> {
+                }
+
+                GlobalSplitInstallSessionStatus.INSTALLING -> {
+                    Toast.makeText(this, "Установка завершена", Toast.LENGTH_LONG).show()
+                }
+
+                GlobalSplitInstallSessionStatus.INSTALLED -> {
+
+                }
+
+                GlobalSplitInstallSessionStatus.UNINSTALLED -> {
+                    Toast.makeText(this, "Удаление завершено", Toast.LENGTH_LONG).show()
+                }
+
+                GlobalSplitInstallSessionStatus.UNINSTALLING -> {
+
+                }
+
+                GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                    Presenter.getSplitInstallManager(this)
+                        .startConfirmationDialogForResult(
+                            state,
+                            this,
+                            INSTALL_REQUEST_CODE
+                        )
+                }
+            }
+        }
+
+        updateList()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_maps)
         binding = ActivityMapsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -59,7 +98,15 @@ class MapsActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        Presenter.subscribeServer().observeForever(observerUpdate)
+
         updateList()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        Presenter.subscribeServer().removeObserver(observerUpdate)
     }
 
     private fun updateList() {
@@ -69,25 +116,13 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == INSTALL_REQUEST_CODE
-            && data?.hasExtra(GlobalSplitInstallConfirmResult.EXTRA_RESULT) == true
-        ) {
-            val confirmResult = data.getIntExtra(
-                GlobalSplitInstallConfirmResult.EXTRA_RESULT,
-                GlobalSplitInstallConfirmResult.RESULT_DENIED
-            )
-
-            if (confirmResult == GlobalSplitInstallConfirmResult.RESULT_CONFIRMED) {
-                // User granted permission, install again!
-            }
-        }
     }
 
     private fun initRecyclerView() {
-
-        adapter = MapRvAdapter(globalSplitInstallManager)
+        adapter = MapRvAdapter()
 
         binding.mapsRv.layoutManager = LinearLayoutManager(this)
         binding.mapsRv.adapter = adapter

@@ -40,7 +40,7 @@
         <WebView
             android:id="@+id/webview_map"
             android:layout_width="match_parent"
-            android:layout_height="400dp" >
+            android:layout_height="match_parent" >
 
         </WebView>
     </androidx.appcompat.widget.LinearLayoutCompat>

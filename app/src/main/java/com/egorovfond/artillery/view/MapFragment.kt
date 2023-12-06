@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.egorovfond.artillery.R
@@ -47,9 +48,9 @@ class MapFragment() : AppCompatActivity() {
             this.finish()
         }
 
-        binding.mapEdt?.let {
+        binding.mapEdt.let {
             it.setAdapter(mapAdapter)
-            it.setOnItemClickListener { parent, view, position, id ->
+            it.setOnItemClickListener { _, _, position, _ ->
                 run {
                     presenter.url = mapAdapter.getItem(position).toString()
                     presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
@@ -101,7 +102,19 @@ class MapFragment() : AppCompatActivity() {
     }
 
     fun updateWebView(){
-        if (presenter.url.isNotEmpty()) binding.webviewMap.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
+        try {
+            if (presenter.url.isNotEmpty())
+                binding.webviewMap
+                .loadUrl("file:///android_asset/${
+                    if (presenter.localmap) {
+                        presenter.url + "_local"
+                    } else {
+                        presenter.url
+                    } 
+                }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
+        }catch (e: Exception){
+            Toast.makeText(this, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     class Callback: WebViewClient(){
@@ -114,13 +127,21 @@ class MapFragment() : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            view?.loadUrl(request?.url.toString())
+            try {
+                view?.loadUrl(request?.url.toString())
+            } catch (e: Exception){
+                //Toast.makeText(, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
+            }
             return true
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             url?.let {
-                view?.loadUrl(it)
+                try {
+                    view?.loadUrl(it)
+                }  catch (e: Exception){
+                    //Toast.makeText(this, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
+                }
             }
             return true
         }
