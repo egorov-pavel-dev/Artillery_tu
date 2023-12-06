@@ -30,8 +30,9 @@ class MapRvAdapter(): RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
         private fun loadMapGlobal(map: Map) = with(itemView){
             val mapsInLoad = Presenter.getMapsLoad()
 
-            if (mapsInLoad.find { it.equals(map.name) } != null){
+            if (mapsInLoad.size != 0){
                 Toast.makeText(itemView.context, "Дождитесь окончания предыдущей установки", Toast.LENGTH_SHORT).show()
+                map.isLoaded = globalSplitInstallManager.installedModules.contains(map.name)
                 return@with
             }
 

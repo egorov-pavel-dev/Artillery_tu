@@ -151,21 +151,6 @@ class Presenter: ViewModel() {
 
         fun loadMap(mapName:String){
             var mySessionId = 0
-            val onSuccessListener =
-                OnGlobalSplitInstallSuccessListener<Int> { sessionId ->
-                    if (sessionId != 0) {
-                        addMapsLoad(mapName)
-                        sessions.add(sessionId)
-                        mySessionId = sessionId
-                    }
-                }
-            val onCompleteListener = OnGlobalSplitInstallCompleteListener<Int> { }
-            val onFailureListener = OnGlobalSplitInstallFailureListener {
-                removeMapsLoad(mapName)
-                sessions.remove(mySessionId)
-
-                liveDataUpate.postValue(null)
-            }
             val listener =
                 GlobalSplitInstallUpdatedListener { state ->
                     if (sessions.find { it == state!!.sessionId() } != null) {
@@ -221,6 +206,24 @@ class Presenter: ViewModel() {
                                 liveDataUpate.postValue(state)
                             }
                         }
+                    }
+                }
+            val onCompleteListener = OnGlobalSplitInstallCompleteListener<Int> { }
+            val onFailureListener = OnGlobalSplitInstallFailureListener {
+                removeMapsLoad(mapName)
+                sessions.remove(mySessionId)
+
+                globalSplitInstallManager?.unregisterListener(listener)
+                liveDataUpate.postValue(null)
+            }
+            val onSuccessListener =
+                OnGlobalSplitInstallSuccessListener<Int> { sessionId ->
+                    if (sessionId != 0) {
+                        addMapsLoad(mapName)
+                        sessions.add(sessionId)
+                        mySessionId = sessionId
+                    } else {
+                        globalSplitInstallManager?.unregisterListener(listener)
                     }
                 }
 
@@ -305,6 +308,9 @@ class Presenter: ViewModel() {
         fun removeMapsLoad(item: String){
             synchronized(Presenter::class) {
                 mapsLoad.remove(item)
+                if (mapsLoad.size == 0) globalSplitInstallManager?.let {
+                    it.unregisterListener {  }
+                }
             }
         }
     }
