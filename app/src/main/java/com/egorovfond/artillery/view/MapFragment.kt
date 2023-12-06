@@ -103,7 +103,15 @@ class MapFragment() : AppCompatActivity() {
 
     fun updateWebView(){
         try {
-            if (presenter.url.isNotEmpty()) binding.webviewMap.loadUrl("file:///android_asset/${if (presenter.localmap) {presenter.url + "_local"} else {presenter.url} }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
+            if (presenter.url.isNotEmpty())
+                binding.webviewMap
+                .loadUrl("file:///android_asset/${
+                    if (presenter.localmap) {
+                        presenter.url + "_local"
+                    } else {
+                        presenter.url
+                    } 
+                }.html?lat=${y}&lng=${x}&w_lat=${w_y}&w_lng=${w_x}&range=${w_r}&dot=${w_dot_r}&r_min=${w_r_min}&typemap=${typemap}")
         }catch (e: Exception){
             Toast.makeText(this, "Ошибка загрузки карты. ${e.message.toString()}", Toast.LENGTH_SHORT).show()
         }
