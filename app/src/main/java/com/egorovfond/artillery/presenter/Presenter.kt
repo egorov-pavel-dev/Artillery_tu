@@ -126,6 +126,7 @@ class Presenter: ViewModel() {
         private val mapsLoad = mutableListOf<String>()
         private val sessions = mutableListOf<Int>()
         private val liveDataUpate: MutableLiveData<GlobalSplitInstallSessionState?> = MutableLiveData()
+        private lateinit var listener: GlobalSplitInstallUpdatedListener
 
         fun subscribeServer(): MutableLiveData<GlobalSplitInstallSessionState?> = liveDataUpate
 
@@ -150,14 +151,16 @@ class Presenter: ViewModel() {
         }
 
         fun loadMap(mapName:String){
+            addMapsLoad(mapName)
+
             var mySessionId = 0
-            val listener =
+            listener =
                 GlobalSplitInstallUpdatedListener { state ->
                     if (sessions.find { it == state!!.sessionId() } != null) {
                         when (state!!.status()) {
                             GlobalSplitInstallSessionStatus.CANCELED -> {
                                 removeMapsLoad(mapName)
-                                sessions.remove(state.sessionId())
+                                sessions.clear()
 
                                 liveDataUpate.postValue(state)
                             }
@@ -178,7 +181,7 @@ class Presenter: ViewModel() {
                                     }
                                 }
                                 removeMapsLoad(mapName)
-                                sessions.remove(state.sessionId())
+                                sessions.clear()
 
                                 liveDataUpate.postValue(state)
                             }
@@ -190,7 +193,7 @@ class Presenter: ViewModel() {
                                     }
                                 }
                                 removeMapsLoad(mapName)
-                                sessions.remove(state.sessionId())
+                                sessions.clear()
 
                                 liveDataUpate.postValue(state)
                             }
@@ -201,7 +204,7 @@ class Presenter: ViewModel() {
 
                             GlobalSplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                                 removeMapsLoad(mapName)
-                                sessions.remove(state.sessionId())
+                                sessions.clear()
 
                                 liveDataUpate.postValue(state)
                             }
@@ -219,11 +222,8 @@ class Presenter: ViewModel() {
             val onSuccessListener =
                 OnGlobalSplitInstallSuccessListener<Int> { sessionId ->
                     if (sessionId != 0) {
-                        addMapsLoad(mapName)
                         sessions.add(sessionId)
                         mySessionId = sessionId
-                    } else {
-                        globalSplitInstallManager?.unregisterListener(listener)
                     }
                 }
 
@@ -307,9 +307,11 @@ class Presenter: ViewModel() {
 
         fun removeMapsLoad(item: String){
             synchronized(Presenter::class) {
-                mapsLoad.remove(item)
+                //mapsLoad.remove(item)
+                mapsLoad.clear()
+
                 if (mapsLoad.size == 0) globalSplitInstallManager?.let {
-                    it.unregisterListener {  }
+                    it.unregisterListener(listener)
                 }
             }
         }

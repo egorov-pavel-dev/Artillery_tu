@@ -22,6 +22,7 @@ class MapRvAdapter(): RecyclerView.Adapter<MapRvAdapter.ViewHolder>(){
 
             binding.mapRvIsloaded.setOnClickListener {
                 loadMapGlobal(map)
+                update(map, binding)
             }
 
             update(map, binding)
