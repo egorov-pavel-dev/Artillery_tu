@@ -310,9 +310,7 @@ class Presenter: ViewModel() {
                 //mapsLoad.remove(item)
                 mapsLoad.clear()
 
-                if (mapsLoad.size == 0) globalSplitInstallManager?.let {
-                    it.unregisterListener(listener)
-                }
+                if (mapsLoad.size == 0) globalSplitInstallManager?.unregisterListener(listener)
             }
         }
     }
