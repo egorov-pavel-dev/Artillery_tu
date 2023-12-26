@@ -11,11 +11,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.databinding.ActivityOrudieSettingsBinding
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
+import com.google.gson.Gson
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.io.BufferedReader
+import java.io.File
 
 
 class OrudieSettingsActivity : AppCompatActivity() {
@@ -251,6 +255,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
                         }
 
                     })
+
             }catch (e: Exception){
                 Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
             }
