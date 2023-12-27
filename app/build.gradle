@@ -108,7 +108,8 @@ android {
             ':takistan_part1',
             ':takistan_part2',
             ':pja310',
-            ':zargabad'
+            ':zargabad',
+            ':tableweapon'
     ]
 
 }

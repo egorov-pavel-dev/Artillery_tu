@@ -47,6 +47,7 @@ class Presenter: ViewModel() {
     val heightMap = HeightMaps()
 
     val maps = mutableListOf(
+        Map(name = "tableweapon", url = "com.egorovfond.tableweapon", size = 0f, isLoaded = false),
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
         Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
         Map(name = "chernarus", url = "com.egorovfond.chernarus", size = 0f, isLoaded = false),
@@ -482,6 +483,10 @@ class Presenter: ViewModel() {
     fun getWeaponFromDB() {
         DB.getWeaponList()
     }
+
+    fun initBullet(weaponName: String, tableWeapon: MutableList<Table>){
+        DB.initBullet(weaponName, tableWeapon)
+    }
     fun updateOrudieByXY(weapon: Orudie){
         synchronized(Presenter::class) {
             val range = Azimut.getRangeByCoordinat(
@@ -654,8 +659,8 @@ class Presenter: ViewModel() {
     fun dbAddWeapon(nameWeapon: String, mil: Int) {
         DB.addWeapon(nameWeapon, mil = mil)
     }
-    fun getWeaponTableFromDB(weaponID: String) {
-        DB.getWeaponTable(weaponID)
+    fun getWeaponTableFromDB(weaponID: String, table: MutableList<Table>) {
+        DB.getWeaponTable(weaponID, table)
     }
     fun getWeaponBullet(weaponID: String, base: String){
         DB.getWeaponBullet(weapon = weaponID, base = base)

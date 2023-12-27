@@ -45,7 +45,7 @@ class DB {
         fun subscribegetBase(): MutableLiveData<MutableList<String>> = liveDatagetBase
         fun subscribeInicialize(): MutableLiveData<Boolean> = liveDataInicialize
 
-        fun getWeaponTable(weapon: String) {
+        fun getWeaponTable(weapon: String, tableWeapon: MutableList<Table>) {
             synchronized(DB::class) {
                 /// Работа с базой
                 tableDao?.let {
@@ -56,8 +56,6 @@ class DB {
                         .subscribe(
                             {
                                 table.clear()
-
-
                                 if (it.size != 0)
                                 {
                                     val dbTable = mutableListOf<Table>()
@@ -70,7 +68,7 @@ class DB {
 
                                     liveDatagetWeaponTable.postValue(table)
                                 }else{
-                                    initBullet(weapon)
+                                    initBullet(weapon, tableWeapon)
                                 }
                             },
                             {
@@ -361,9 +359,9 @@ class DB {
         fun initWeapon(weaponName: String){
                weaponDao?.let {
                    var mil = 6000
-                   if (weaponName.equals("M119")
-                       || weaponName.equals("M224")
-                       || weaponName.equals("M252")
+                   if (weaponName.equals(Weapons.weapon_M119)
+                       || weaponName.equals(Weapons.weapon_M224)
+                       || weaponName.equals(Weapons.weapon_M252)
                    ) mil = 6400
 
                    val weaponEntity =
@@ -583,241 +581,263 @@ class DB {
             }
         }
 
-        fun initBullet(weaponName: String){
+        fun initBullet(weaponName: String, tableWeapon: MutableList<Table>){
             tableDao?.let {
-                if (weaponName.equals(Weapons.weapon_120mm)) {
-                    for (table_ in Table.table120mm)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
+                if(tableWeapon.size == 0) {
+                    if (weaponName.equals(Weapons.weapon_120mm)) {
+                        for (table_ in Table.table120mm)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.table120mm)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.table120mm)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_2B14)) {
+                        for (table_ in Table.table2B14)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_2B14)) {
-                    for (table_ in Table.table2B14)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.table2B14)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.table2B14)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_2B9)) {
+                        for (table_ in Table.table2B9)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_2B9)) {
-                    for (table_ in Table.table2B9)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.table2B9)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.table2B9)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_D30)) {
+                        for (table_ in Table.tableD30)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_D30)) {
-                    for (table_ in Table.tableD30)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableD30)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableD30)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_M119)) {
+                        for (table_ in Table.tableM119)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_M119)) {
-                    for (table_ in Table.tableM119)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableM119)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableM119)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_M224)) {
+                        for (table_ in Table.tableM224)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_M224)) {
-                    for (table_ in Table.tableM224)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableM224)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableM224)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_M252)) {
+                        for (table_ in Table.tableM252)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_M252)) {
-                    for (table_ in Table.tableM252)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableM252)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableM252)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_Type63)) {
+                        for (table_ in Table.tableType63)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_Type63)) {
-                    for (table_ in Table.tableType63)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableType63)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableType63)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_2C3)) {
+                        for (table_ in Table.table2C3)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_2C3)) {
-                    for (table_ in Table.table2C3)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.table2C3)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.table2C3)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_2C1)) {
+                        for (table_ in Table.table2C1)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_2C1)) {
-                    for (table_ in Table.table2C1)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.table2C1)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.table2C1)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_SPG9)) {
+                        for (table_ in Table.tableSPG9)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_SPG9)) {
-                    for (table_ in Table.tableSPG9)
-                        it.insertTable(
-                            Table.toEntity(
-                                table = table_,
-                                weapon = weaponName
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    table.clear()
-                                    table.addAll(Table.tableSPG9)
-                                    liveDatagetWeaponTable.postValue(table)
-                                },
-                                {
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableSPG9)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
 
-                                }
+                                    }
+                                )
+                    }
+                    if (weaponName.equals(Weapons.weapon_BM21)) {
+                        for (table_ in Table.tableBM21)
+                            it.insertTable(
+                                Table.toEntity(
+                                    table = table_,
+                                    weapon = weaponName
+                                )
                             )
-                }
-                if (weaponName.equals(Weapons.weapon_BM21)) {
-                    for (table_ in Table.tableBM21)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                        table.clear()
+                                        table.addAll(Table.tableBM21)
+                                        liveDatagetWeaponTable.postValue(table)
+                                    },
+                                    {
+
+                                    }
+                                )
+                    }
+                }else{
+                    for (table_ in tableWeapon)
                         it.insertTable(
                             Table.toEntity(
                                 table = table_,
@@ -829,7 +849,7 @@ class DB {
                             .subscribe(
                                 {
                                     table.clear()
-                                    table.addAll(Table.tableBM21)
+                                    table.addAll(tableWeapon)
                                     liveDatagetWeaponTable.postValue(table)
                                 },
                                 {
