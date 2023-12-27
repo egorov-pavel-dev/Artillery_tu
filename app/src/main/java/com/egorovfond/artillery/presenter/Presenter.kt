@@ -47,6 +47,7 @@ class Presenter: ViewModel() {
     val heightMap = HeightMaps()
 
     val maps = mutableListOf(
+        Map(name = "tableweapon", url = "com.egorovfond.tableweapon", size = 0f, isLoaded = false),
         Map(name = "altis", url = "com.egorovfond.altis", size = 0f, isLoaded = false),
         Map(name = "brf_sumava", url = "com.egorovfond.brf_sumava", size = 0f, isLoaded = false),
         Map(name = "chernarus", url = "com.egorovfond.chernarus", size = 0f, isLoaded = false),
@@ -482,6 +483,10 @@ class Presenter: ViewModel() {
     fun getWeaponFromDB() {
         DB.getWeaponList()
     }
+
+    fun initBullet(weaponName: String, tableWeapon: MutableList<Table>){
+        DB.initBullet(weaponName, tableWeapon)
+    }
     fun updateOrudieByXY(weapon: Orudie){
         synchronized(Presenter::class) {
             val range = Azimut.getRangeByCoordinat(
@@ -654,8 +659,8 @@ class Presenter: ViewModel() {
     fun dbAddWeapon(nameWeapon: String, mil: Int) {
         DB.addWeapon(nameWeapon, mil = mil)
     }
-    fun getWeaponTableFromDB(weaponID: String) {
-        DB.getWeaponTable(weaponID)
+    fun getWeaponTableFromDB(weaponID: String, table: MutableList<Table>) {
+        DB.getWeaponTable(weaponID, table)
     }
     fun getWeaponBullet(weaponID: String, base: String){
         DB.getWeaponBullet(weapon = weaponID, base = base)
@@ -707,123 +712,6 @@ class Presenter: ViewModel() {
     }
     fun initWeapon(weaponID: String) = DB.initWeapon(weaponName = weaponID)
 
-    fun setMapHeight(map: String){
-        heightMap.minHeight = 0f
-        heightMap.maxHeight = 0f
-        heightMap.mapWigth = 0
-        heightMap.mapHeight = 0
-        heightMap.part = 40000
-
-        if (map.equals("altis")){
-            heightMap.maxHeight = 350f
-            heightMap.mapWigth = 30720
-            heightMap.mapHeight = 30720
-            heightMap.part = 3072
-
-        }
-        if (map.equals("ruha")){
-            heightMap.maxHeight = 73f
-            heightMap.mapWigth = 8192
-            heightMap.mapHeight = 8192
-            heightMap.part = 8193
-        }
-        if (map.equals("lythium")){
-            heightMap.maxHeight = 1335f
-            heightMap.mapWigth = 20480
-            heightMap.mapHeight = 20480
-            heightMap.part = 2048
-        }
-        if (map.equals("fallujahint")){
-            heightMap.maxHeight = 51f
-            heightMap.mapWigth = 10240
-            heightMap.mapHeight = 10240
-            heightMap.part = 2560
-        }
-        if (map.equals("pja314")){
-            heightMap.maxHeight = 238f
-            heightMap.mapWigth = 20480
-            heightMap.mapHeight = 20480
-            heightMap.part = 2048
-        }
-        if (map.equals("takistan")){
-            heightMap.maxHeight = 850f
-            heightMap.mapWigth = 12800
-            heightMap.mapHeight = 12800
-            heightMap.part = 3200
-        }
-        if (map.equals("wl_rosche")){
-            heightMap.maxHeight = 56f
-            heightMap.mapWigth = 15360
-            heightMap.mapHeight = 15360
-            heightMap.part = 3840
-        }
-        if (map.equals("chernarus")){
-            heightMap.maxHeight = 550f
-            heightMap.mapWigth = 15360
-            heightMap.mapHeight = 15360
-            heightMap.part = 3840
-        }
-        if (map.equals("brf_sumava")){
-            heightMap.maxHeight = 251f
-            heightMap.mapWigth = 12288
-            heightMap.mapHeight = 12288
-            heightMap.part = 3072
-        }
-        if (map.equals("enoch")){
-            heightMap.maxHeight = 442f
-            heightMap.mapWigth = 12800
-            heightMap.mapHeight = 12800
-            heightMap.part = 3200
-        }
-        if (map.equals("kujari")){
-            heightMap.maxHeight = 61f
-            heightMap.mapWigth = 16384
-            heightMap.mapHeight = 16384
-            heightMap.part = 2048
-        }
-        if (map.equals("malden")){
-            heightMap.maxHeight = 523f
-            heightMap.mapWigth = 12800
-            heightMap.mapHeight = 12800
-            heightMap.part = 3200
-        }
-        if (map.equals("tanoa")){
-            heightMap.maxHeight = 442f
-            heightMap.mapWigth = 15360
-            heightMap.mapHeight = 15360
-            heightMap.part = 3840
-        }
-        if (map.equals("zargabad")){
-            heightMap.maxHeight = 418f
-            heightMap.mapWigth = 8192
-            heightMap.mapHeight = 8192
-            heightMap.part = 2048
-        }
-        if (map.equals("napf")){
-            heightMap.maxHeight = 515f
-            heightMap.mapWigth = 20480
-            heightMap.mapHeight = 20480
-            heightMap.part = 2048
-        }
-        if (map.equals("pja310")){
-            heightMap.maxHeight = 269f
-            heightMap.mapWigth = 20480
-            heightMap.mapHeight = 20480
-            heightMap.part = 2048
-        }
-        if (map.equals("pecher")){
-            heightMap.maxHeight = 418f
-            heightMap.mapWigth = 8192
-            heightMap.mapHeight = 8192
-            heightMap.part = 2048
-        }
-        if (map.equals("vt7")){
-            heightMap.maxHeight = 64f
-            heightMap.mapWigth = 18001
-            heightMap.mapHeight = 18001
-            heightMap.part = 3600
-        }
-    }
     fun getHeight(bmpOriginal: Bitmap, x_: Float, y_: Float): Int {
         val mapHeight = heightMap
 

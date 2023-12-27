@@ -11,9 +11,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.egorovfond.artillery.R
+import com.egorovfond.artillery.data.localTable.HeightMaps
 import com.egorovfond.artillery.databinding.FragmentMapBinding
 import com.egorovfond.artillery.presenter.Presenter
+import com.google.gson.Gson
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.File
 
 
 class MapFragment() : AppCompatActivity() {
@@ -34,7 +38,26 @@ class MapFragment() : AppCompatActivity() {
 
         items.clear()
         for (i in presenter.maps){
+            if (i.name.equals("tableweapon")) continue
             items.add(i.name)
+        }
+    }
+
+    private fun getJSONHeightMap() {
+        try {
+            val gson = Gson()
+            val inputString = this.baseContext.assets.open("${presenter.url}Map.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val heightMaps = gson.fromJson(inputString, HeightMaps::class.java)
+
+            presenter.heightMap.part = heightMaps.part
+            presenter.heightMap.minHeight = heightMaps.minHeight
+            presenter.heightMap.maxHeight = heightMaps.maxHeight
+            presenter.heightMap.mapHeight = heightMaps.mapHeight
+            presenter.heightMap.mapWigth = heightMaps.mapWigth
+        }catch (e: Exception){
+
         }
     }
 
@@ -53,7 +76,10 @@ class MapFragment() : AppCompatActivity() {
             it.setOnItemClickListener { _, _, position, _ ->
                 run {
                     presenter.url = mapAdapter.getItem(position).toString()
-                    presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
+
+                    getJSONHeightMap()
+
+                    //presenter.setMapHeight(map = mapAdapter.getItem(position).toString())
                     updateWebView()
                 }
             }

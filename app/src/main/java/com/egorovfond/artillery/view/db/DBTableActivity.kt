@@ -73,7 +73,7 @@ class DBTableActivity : AppCompatActivity() {
         binding.dbtableWeapon.setOnItemClickListener { parent, view, position, id ->
             run {
                 weaponID = weaponAdapter.getItem(position).toString()
-                presenter.getWeaponTableFromDB(weaponID)
+                presenter.getWeaponTableFromDB(weaponID, mutableListOf())
                 presenter.getWeaponBase(weaponID)
             }
         }

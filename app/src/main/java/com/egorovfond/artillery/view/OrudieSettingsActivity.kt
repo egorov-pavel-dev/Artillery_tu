@@ -14,6 +14,8 @@ import com.egorovfond.artillery.R
 import com.egorovfond.artillery.databinding.ActivityOrudieSettingsBinding
 import com.egorovfond.artillery.math.Table
 import com.egorovfond.artillery.presenter.Presenter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
@@ -126,7 +128,12 @@ class OrudieSettingsActivity : AppCompatActivity() {
             run {
                 positionWeapon = position
                 presenter.setWeaponIntoOrudie(weaponAdapter.getItem(position).toString())
-                presenter.getWeaponTableFromDB(weaponAdapter.getItem(position).toString())
+                try {
+                    val table = getJSONTable(weaponAdapter.getItem(position).toString())
+                    presenter.getWeaponTableFromDB(weaponAdapter.getItem(position).toString(), table)
+                }catch (e: Exception) {
+                    presenter.getWeaponTableFromDB(weaponAdapter.getItem(position).toString(), mutableListOf())
+                }
                 presenter.setBulletIntoOrudie("")
                 presenter.setBaseIntoOrudie("")
             }
@@ -140,7 +147,6 @@ class OrudieSettingsActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {
                 if(p0.toString().isEmpty()) presenter.getWeapon()[presenter.getCurrentWeapon().position].nameOrudie = ""
                 else  presenter.getWeapon()[presenter.getCurrentWeapon().position].nameOrudie = p0.toString()
-
             }
         })
 
@@ -229,8 +235,6 @@ class OrudieSettingsActivity : AppCompatActivity() {
                 val part = (Math.round((presenter.getCurrentWeapon().x * 1000)) / presenter.heightMap.part).toInt()
                 val path = "file:///android_asset/${presenter.url}_${part}.png"
                 Picasso.get().load(path)
-                    //.resize((presenter.heightMap.mapWigth * presenter.heightMap.scale).toInt(), (presenter.heightMap.mapHeight * presenter.heightMap.scale).toInt())
-                    //.onlyScaleDown()
                     .into(image, object : Callback{
                         override fun onSuccess() {
                             val bitmap = (image.drawable as BitmapDrawable).bitmap
@@ -251,6 +255,7 @@ class OrudieSettingsActivity : AppCompatActivity() {
                         }
 
                     })
+
             }catch (e: Exception){
                 Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
             }
@@ -303,4 +308,15 @@ class OrudieSettingsActivity : AppCompatActivity() {
         binding.weaponSettingsAzimutTh.setText(presenter.getCurrentWeapon().azimut_Dot.toString())
     }
 
+    private fun getJSONTable(name: String): MutableList<Table> {
+        val gson = Gson()
+        val inputString = this.baseContext.assets.open("${name}.json")
+                .bufferedReader()
+                .use { it.readText() }
+        val listType = object : TypeToken<MutableList<Table?>?>() {}.type
+
+        val table: MutableList<Table> = gson.fromJson(inputString, listType) as MutableList<Table>
+
+        return table
+    }
 }
