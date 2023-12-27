@@ -38,6 +38,7 @@ class MapFragment() : AppCompatActivity() {
 
         items.clear()
         for (i in presenter.maps){
+            if (i.name.equals("tableweapon")) continue
             items.add(i.name)
         }
     }
