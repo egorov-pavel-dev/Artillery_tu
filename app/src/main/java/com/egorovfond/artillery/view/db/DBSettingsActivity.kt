@@ -64,7 +64,9 @@ class DBSettingsActivity : AppCompatActivity() {
         binding.localMap.setOnClickListener {
             presenter.localmap = binding.localMap.isChecked
         }
-
+        binding.autoUpdate.setOnClickListener {
+            presenter.autoupdate = binding.autoUpdate.isChecked
+        }
         binding.btnMapsUpdate.setOnClickListener {
             AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
@@ -92,6 +94,7 @@ class DBSettingsActivity : AppCompatActivity() {
         val versionName =  this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
 
         binding.nameVersion.setText(" Версия \n ${versionName} ")
+        binding.autoUpdate.isChecked = presenter.autoupdate
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

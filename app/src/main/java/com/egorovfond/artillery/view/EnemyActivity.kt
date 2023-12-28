@@ -25,7 +25,8 @@ class EnemyActivity : AppCompatActivity() {
 
 
     private val observerUpdate = Observer<Boolean> {
-        updateList()
+        adapter.notifyDataSetChanged()
+        //updateList()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,36 +159,56 @@ class EnemyActivity : AppCompatActivity() {
         }
         binding.btnMapEdHeight.setOnClickListener{
             Toast.makeText(this@EnemyActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
-            try {
-                val image = ImageView(this)
-                val part = (Math.round((presenter.getTargetList()[presenter.currentEnemy.position].x * 1000)) / presenter.heightMap.part).toInt()
-                val path = "file:///android_asset/${presenter.url}_${part}.png"
-                Picasso.get().load(path)
-                    //.resize((presenter.heightMap.mapWigth * presenter.heightMap.scale).toInt(), (presenter.heightMap.mapHeight * presenter.heightMap.scale).toInt())
-                    //.onlyScaleDown()
-                    .into(image, object : Callback {
-                        override fun onSuccess() {
-                            val bitmap = (image.drawable as BitmapDrawable).bitmap
-                            bitmap?.let {
-                                presenter.getTargetList()[presenter.currentEnemy.position].h = presenter.getHeight(
+            updateHeight()
+        }
+
+
+    }
+
+    private fun updateHeight() {
+        try {
+            val image = ImageView(this)
+            val part =
+                (Math.round((presenter.getTargetList()[presenter.currentEnemy.position].x * 1000)) / presenter.heightMap.part).toInt()
+            val path = "file:///android_asset/${presenter.url}_${part}.png"
+            Picasso.get().load(path)
+                //.resize((presenter.heightMap.mapWigth * presenter.heightMap.scale).toInt(), (presenter.heightMap.mapHeight * presenter.heightMap.scale).toInt())
+                //.onlyScaleDown()
+                .into(image, object : Callback {
+                    override fun onSuccess() {
+                        val bitmap = (image.drawable as BitmapDrawable).bitmap
+                        bitmap?.let {
+                            presenter.getTargetList()[presenter.currentEnemy.position].h =
+                                presenter.getHeight(
                                     it,
                                     presenter.getTargetList()[presenter.currentEnemy.position].x,
                                     presenter.getTargetList()[presenter.currentEnemy.position].y
                                 ).toInt()
 
-                                Toast.makeText(this@EnemyActivity, "Высота цели: ${presenter.getTargetList()[presenter.currentEnemy.position].h}", Toast.LENGTH_LONG).show()
-                                binding.edHt.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
-                            }
+                            Toast.makeText(
+                                this@EnemyActivity,
+                                "Высота цели: ${presenter.getTargetList()[presenter.currentEnemy.position].h}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.edHt.setText(presenter.getTargetList()[presenter.currentEnemy.position].h.toString())
                         }
+                    }
 
-                        override fun onError(e: java.lang.Exception?) {
-                            Toast.makeText(this@EnemyActivity, "Не удалось загрузить карту высот: ${e!!.message}", Toast.LENGTH_LONG).show()
-                        }
+                    override fun onError(e: java.lang.Exception?) {
+                        Toast.makeText(
+                            this@EnemyActivity,
+                            "Не удалось загрузить карту высот: ${e!!.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
 
-                    })
-            }catch (e: Exception){
-                Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+                })
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                "Не удалось загрузить карту высот: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -223,6 +244,10 @@ class EnemyActivity : AppCompatActivity() {
 
         binding.checkBoxEnemy.isChecked = presenter.getTargetList()[presenter.currentEnemy.position].k_use
 
+        if (presenter.autoupdate){
+            updateHeight()
+        }
+
         if(binding.checkBoxEnemy.isChecked){
             binding.linearLayoutEnemyKorLeftreight.visibility = View.VISIBLE
             binding.linearLayoutEnemyKorUpdown.visibility = View.VISIBLE
@@ -230,6 +255,7 @@ class EnemyActivity : AppCompatActivity() {
             binding.linearLayoutEnemyKorLeftreight.visibility = View.GONE
             binding.linearLayoutEnemyKorUpdown.visibility = View.GONE
         }
+
         adapter.notifyDataSetChanged()
     }
 }

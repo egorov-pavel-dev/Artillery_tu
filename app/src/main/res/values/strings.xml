@@ -119,4 +119,5 @@
     <string name="channel_name">Artillery</string>
     <string name="channel_description">loading</string>
     <string name="title_tableweapon">Table weapon</string>
+    <string name="autoupdate">Авторасчет</string>
 </resources>
