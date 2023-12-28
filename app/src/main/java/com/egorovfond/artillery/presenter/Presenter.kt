@@ -45,6 +45,7 @@ class Presenter: ViewModel() {
     @Volatile var currentTable = mutableListOf<Table>()
     @Volatile var weaponlist = mutableListOf<WeaponEntity>()
     val heightMap = HeightMaps()
+    var autoupdate = true
 
     val maps = mutableListOf(
         Map(name = "tableweapon", url = "com.egorovfond.tableweapon", size = 0f, isLoaded = false),

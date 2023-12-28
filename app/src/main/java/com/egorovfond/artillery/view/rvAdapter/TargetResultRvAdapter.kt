@@ -23,29 +23,20 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 
 
         fun bind(position: Int, binding: CardTargetListResultBinding) = with(itemView) {
+            //binding.checkBoxNotBussol.isChecked= true
+
             updateView(presenter.getResultAbout()[position], binding)
 
             binding.checkBoxMortire.setOnClickListener {
                 presenter.changeMortirResultAbout(position, binding.checkBoxMortire.isChecked)
+                if(presenter.autoupdate) updateResult(binding, position)
             }
 
             binding.checkBoxNotBussol.setOnClickListener {
                 updateView(presenter.getResultAbout()[position], binding)
             }
             binding.btnChangeTHBussol.setOnClickListener {
-                try {
-                    if (!binding.checkBoxNotBussol.isChecked){
-                        presenter.getResultAbout()[position].ugol = binding.edBussol.text.toString().toInt()
-                    }
-                    presenter.updateWeaponTH(binding.checkBoxNotBussol.isChecked, presenter.getResultAbout()[position])
-                }catch (e: Throwable){
-                    Log.d(TAG, "bind: $e")
-                }
-
-//                text_list_item.setText("${presenter.getResultAbout()[position].orudie.nameOrudie} Снаряд: ${presenter.getResultAbout()[position].bullet}")
-//                text_list_item_result.setText("Прицел: ${presenter.getResultAbout()[position].resultPricel} Угол: ${presenter.getResultAbout()[position].resultUgol}")
-//                ed_bussol.setText(presenter.getResultAbout()[position].ugol.toString())
-
+                updateResult(binding, position)
             }
             binding.btnChangeTHDot.setOnClickListener {
                 try {
@@ -55,10 +46,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                     Log.d(TAG, "bind: $e")
                 }
 
-//                text_list_item.setText("${presenter.getResultAbout()[position].orudie.nameOrudie} Снаряд: ${presenter.getResultAbout()[position].bullet}")
-//                text_list_item_result.setText("Прицел: ${presenter.getResultAbout()[position].resultPricel} Угол: ${presenter.getResultAbout()[position].resultUgol}")
-//                ed_bussol.setText(presenter.getResultAbout()[position].ugol.toString())
-
+                if(presenter.autoupdate) updateResult(binding, position)
             }
             binding.btnChangeTHDotPrilet.setOnClickListener {
                 try {
@@ -68,10 +56,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                     Log.d(TAG, "bind: $e")
                 }
 
-//                text_list_item.setText("${presenter.getResultAbout()[position].orudie.nameOrudie} Снаряд: ${presenter.getResultAbout()[position].bullet}")
-//                text_list_item_result.setText("Прицел: ${presenter.getResultAbout()[position].resultPricel} Угол: ${presenter.getResultAbout()[position].resultUgol}")
-//                ed_bussol.setText(presenter.getResultAbout()[position].ugol.toString())
-
+                if(presenter.autoupdate) updateResult(binding, position)
             }
 
             binding.edBussol.addTextChangedListener(object : TextWatcher {
@@ -86,6 +71,7 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
 //                        if (p0.toString().isEmpty()) presenter.getResultAbout()[position].ugol = 0
 //                        else presenter.getResultAbout()[position].ugol = p0.toString().toInt()
 //                    }
+                    if(presenter.autoupdate) updateResult(binding, position)
                 }
             })
             binding.edEnemy.addTextChangedListener(object : TextWatcher {
@@ -104,6 +90,8 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                         else presenter.getResultAbout()[position].azimut_target =
                             p0.toString().toInt()
                     }
+
+                    if(presenter.autoupdate) updateResult(binding, position)
                 }
             })
             binding.edRange.addTextChangedListener(object : TextWatcher {
@@ -119,8 +107,28 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
                             0f
                         else presenter.getResultAbout()[position].distace = p0.toString().toFloat()
                     }
+
+                    if(presenter.autoupdate) updateResult(binding, position)
                 }
             })
+        }
+
+        private fun updateResult(
+            binding: CardTargetListResultBinding,
+            position: Int
+        ) {
+            try {
+                if (!binding.checkBoxNotBussol.isChecked) {
+                    presenter.getResultAbout()[position].ugol =
+                        binding.edBussol.text.toString().toInt()
+                }
+                presenter.updateWeaponTH(
+                    binding.checkBoxNotBussol.isChecked,
+                    presenter.getResultAbout()[position]
+                )
+            } catch (e: Throwable) {
+                Log.d(TAG, "bind: $e")
+            }
         }
 
         @SuppressLint("SetTextI18n")
@@ -128,11 +136,20 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
             binding.textListItem.setText("${resultAbout.orudie.nameOrudie} Снаряд: ${resultAbout.bullet}")
             if (resultAbout.resultPricel == -1){
                 binding.textListItemResult.setText("Снаряд не подходит")
-            }else     binding.textListItemResult.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol} (${resultAbout.time}сек.)")
-            binding.edBussol.setText(resultAbout.ugol.toString())
-            binding.edEnemy.setText(resultAbout.azimut_target.toString())
-            binding.edRange.setText(resultAbout.distace.toString())
-            binding.checkBoxMortire.isChecked = resultAbout.orudie.mortir
+            }else  binding.textListItemResult.setText("Прицел: ${resultAbout.resultPricel} +/- ${resultAbout.deltaPricel} Угол: ${resultAbout.resultUgol} +/- ${resultAbout.deltaUgol} (${resultAbout.time}сек.)")
+            if (binding.edBussol.text.toString() != resultAbout.ugol.toString()) {
+                binding.edBussol.setText(resultAbout.ugol.toString())
+            }
+            if (binding.edEnemy.text.toString() != resultAbout.azimut_target.toString()) {
+                binding.edEnemy.setText(resultAbout.azimut_target.toString())
+            }
+            if (binding.edRange.text.toString() != resultAbout.distace.toString()) {
+                binding.edRange.setText(resultAbout.distace.toString())
+            }
+
+            if (binding.checkBoxMortire.isChecked != resultAbout.orudie.mortir) {
+                binding.checkBoxMortire.isChecked = resultAbout.orudie.mortir
+            }
 
             if (binding.checkBoxNotBussol.isChecked) {
                 binding.edBussolTil.isEnabled = false
@@ -143,10 +160,6 @@ class TargetResultRvAdapter: RecyclerView.Adapter<TargetResultRvAdapter.ViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TargetResultRvAdapter.ViewHolder {
-//        return TargetResultRvAdapter.ViewHolder(
-//            LayoutInflater.from(parent.context)
-//                .inflate(R.layout.card_target_list_result, parent, false) as View
-//        )
         return ViewHolder(CardTargetListResultBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 

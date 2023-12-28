@@ -230,35 +230,52 @@ class OrudieSettingsActivity : AppCompatActivity() {
 
         binding.btnMapHeight.setOnClickListener {
             Toast.makeText(this@OrudieSettingsActivity, "Вычисляю высоту..", Toast.LENGTH_LONG).show()
-            try {
-                val image = ImageView(this)
-                val part = (Math.round((presenter.getCurrentWeapon().x * 1000)) / presenter.heightMap.part).toInt()
-                val path = "file:///android_asset/${presenter.url}_${part}.png"
-                Picasso.get().load(path)
-                    .into(image, object : Callback{
-                        override fun onSuccess() {
-                            val bitmap = (image.drawable as BitmapDrawable).bitmap
-                            bitmap?.let {
-                                presenter.getCurrentWeapon().h = presenter.getHeight(
-                                    it,
-                                    presenter.getCurrentWeapon().x,
-                                    presenter.getCurrentWeapon().y
-                                ).toInt()
+            updateHeight()
+        }
+    }
 
-                                Toast.makeText(this@OrudieSettingsActivity, "Высота орудия: ${presenter.getCurrentWeapon().h}", Toast.LENGTH_LONG).show()
-                                binding.weaponSettingsH.setText(presenter.getCurrentWeapon().h.toString())
-                            }
+    private fun updateHeight() {
+        try {
+            val image = ImageView(this)
+            val part =
+                (Math.round((presenter.getCurrentWeapon().x * 1000)) / presenter.heightMap.part).toInt()
+            val path = "file:///android_asset/${presenter.url}_${part}.png"
+            Picasso.get().load(path)
+                .into(image, object : Callback {
+                    override fun onSuccess() {
+                        val bitmap = (image.drawable as BitmapDrawable).bitmap
+                        bitmap?.let {
+                            presenter.getCurrentWeapon().h = presenter.getHeight(
+                                it,
+                                presenter.getCurrentWeapon().x,
+                                presenter.getCurrentWeapon().y
+                            ).toInt()
+
+                            Toast.makeText(
+                                this@OrudieSettingsActivity,
+                                "Высота орудия: ${presenter.getCurrentWeapon().h}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.weaponSettingsH.setText(presenter.getCurrentWeapon().h.toString())
                         }
+                    }
 
-                        override fun onError(e: java.lang.Exception?) {
-                            Toast.makeText(this@OrudieSettingsActivity, "Не удалось загрузить карту высот: ${e!!.message}", Toast.LENGTH_LONG).show()
-                        }
+                    override fun onError(e: java.lang.Exception?) {
+                        Toast.makeText(
+                            this@OrudieSettingsActivity,
+                            "Не удалось загрузить карту высот: ${e!!.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
 
-                    })
+                })
 
-            }catch (e: Exception){
-                Toast.makeText(this, "Не удалось загрузить карту высот: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                "Не удалось загрузить карту высот: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -301,6 +318,10 @@ class OrudieSettingsActivity : AppCompatActivity() {
         binding.weaponSettingsWeapon.hint = presenter.getCurrentWeapon().weapon
         binding.orudieWeaponBullet.hint = if (presenter.getCurrentWeapon().bullet.isEmpty()) {"Автовыбор"} else presenter.getCurrentWeapon().bullet
         binding.orudieWeaponBase.hint = if (presenter.getCurrentWeapon().base.isEmpty()) {"не задано"} else presenter.getCurrentWeapon().base
+        if (presenter.autoupdate){
+            updateHeight()
+            updateAzimutTh()
+        }
     }
 
     private fun updateAzimutTh() {
